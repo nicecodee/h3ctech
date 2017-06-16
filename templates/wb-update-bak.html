@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'wb-left-panel.html' %}
+	
+{% endblock %} <!--block left_panel-->
+
+{% block right_panel %}
+
+<div class="leaderboard" style="width:95%;">
+	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
+	
+	<h3>当前记录</h3>
+		<table class="table table-hover" border="1">
+		   <!-- <caption><h1>{{fn}}</h1></caption> -->
+		   <thead>
+			  <tr>
+			  <th rowspan="2">姓名</th>
+			  
+			  {% for day in weekdays %}
+					<th colspan="2">{{day}}</th>
+			  {% endfor %}  
+			  
+			  </tr>
+			  <tr>
+				<th colspan="2">星期六</th>
+				<th colspan="2">星期日</th>
+				<th colspan="2">星期一</th>
+				<th colspan="2">星期二</th>
+				<th colspan="2">星期三</th>
+				<th colspan="2">星期四</th>
+				<th colspan="2">星期五</th>
+			  </tr>
+		   </thead>
+		   <tbody>
+				<tr class="active">
+					{% for column in range(15) %}
+						<td> {{ filedata[0][column] }} </td>
+					{% endfor %}
+				</tr>
+		   </tbody>
+		</table>
+	</div>
+</div>
+
+
+
+<div class="leaderboard" style="width: 25%">
+	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
+		<br><br>
+		<h3>更新记录</h3><h6>(注意：未经填写直接提交，相当于清空该成员的记录！)</h6>
+		<form action="" class="form-inline" method="post">
+			<input type="text" class="form-control" placeholder="周六上午" name="day6_am"  value="{{request.form.day6_am}}">
+			<input type="text" class="form-control" placeholder="周六下午" name="day6_pm"  value="{{request.form.day6_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周日上午" name="day7_am"  value="{{request.form.day7_am}}">
+			<input type="text" class="form-control" placeholder="周日下午" name="day7_pm"  value="{{request.form.day7_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周一上午" name="day1_am"  value="{{request.form.day1_am}}">
+			<input type="text" class="form-control" placeholder="周一下午" name="day1_pm"  value="{{request.form.day1_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周二上午" name="day2_am"  value="{{request.form.day2_am}}">
+			<input type="text" class="form-control" placeholder="周二下午" name="day2_pm"  value="{{request.form.day2_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周三上午" name="day3_am"  value="{{request.form.day3_am}}">
+			<input type="text" class="form-control" placeholder="周三下午" name="day3_pm"  value="{{request.form.day3_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周四上午" name="day4_am"  value="{{request.form.day4_am}}">
+			<input type="text" class="form-control" placeholder="周四下午" name="day4_pm"  value="{{request.form.day4_pm}}">
+			<br>
+			<input type="text" class="form-control" placeholder="周五上午" name="day5_am"  value="{{request.form.day5_am}}">
+			<input type="text" class="form-control" placeholder="周五下午" name="day5_pm"  value="{{request.form.day5_pm}}">
+			<br>
+			<br>
+			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/wb-thisweek/" role="button"><span class="label label-info" >返回</span></a> 
+		</form>
+	</div>
+</div>
+
+
+<br><br><br><br>
+<br><br><br><br>	
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<footer>
+<p>&copy; JiaXuan 2016</p>
+</footer>
+{% endblock %}<!--block right_panel-->

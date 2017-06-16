@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'sys-admin-left-panel.html' %}
+	
+{% endblock %}
+	
+{% block right_panel %}
+	
+
+<div class="leaderboard">
+	<caption><h1>文档列表</h1></caption>
+	
+	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
+		<table class="table table-hover">
+
+		   <thead>
+			  <tr>
+			  		<th>序号</th>
+					<th>文件名 (点击文件名，可查看文件)</th>
+					<th>文档类型</th>
+					<th>上传者</th>
+					<th>上传时间</th>
+					<th>作者</th>
+					<th>备注</th>
+			  </tr>
+		   </thead> 
+		   <tbody>
+				{% for i in range(num_file) %}
+				  <tr class="active">    
+				    <td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger" aria-label="right Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+					
+					<td>
+						<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info" aria-label="right Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+						</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+						{% if 'server' == dirlist[i] %}
+							<a href="{{ url_for('doc_server_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+						{% elif 'network' == dirlist[i] %}
+							<a href="{{ url_for('doc_network_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+						{% elif 'inventory' == dirlist[i] %}
+							<a href="{{ url_for('doc_inventory_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+						{% endif %}
+					 </td>
+				  
+				  
+				  	<td><a href="{{ url_for('doc_type_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info" aria-label="right Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+					 </button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green"> {{dirlist[i]}}</font></td>
+				  
+				  
+					<!-- <td>{{dirlist[i]}}</td> -->
+					<td>None</td>
+					<td>None</td>
+					<td>None</td>
+					<td>None</td>
+				  </tr>
+				{% endfor %}
+		   </tbody>
+		</table> 
+	</div>	
+	
+</div>
+
+   <!-- bootbox 插件（Modal） -->
+  <script>
+    bootbox.setDefaults("locale","zh_CN");  
+	myConfirm = function(url) {
+		bootbox.confirm("确定删除该文档?（此操作不可撤回！）", function(okay) {
+			if(okay)
+				 location.href = url;
+		});
+		return false;
+	}
+   </script>
+   <!-- bootbox 插件（Modal） -->
+
+
+{% endblock %}

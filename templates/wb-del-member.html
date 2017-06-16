@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'wb-left-panel.html' %}
+	
+{% endblock %} <!--block left_panel-->
+
+{% block right_panel %}
+	
+<br>
+<br>	
+<div class="leaderboard" style="width: 25%">
+	<br>
+	{% from "_formhelpers.html" import render_field %}
+	<form method=post action="/wb-del-member/">
+		<dl >
+			{{render_field(form.name)}}			
+		</dl>
+		<p><input type=submit class="btn btn-danger" value=删除成员></p>
+	</form>
+	
+	{% if error %}
+		<p class="error"><strong>Error:</strong>{{error}}</p>
+	{% endif %}
+</div>
+  
+  
+  
+  
+  <footer>
+	<p>&copy; JiaXuan 2016</p>
+  </footer>
+{% endblock %}<!--block right_panel-->

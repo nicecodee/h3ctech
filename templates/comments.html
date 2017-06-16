@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+<div class="well sidebar-nav">
+	<ul class="nav nav-list">
+	  <li class="nav-header">TBD</li>
+	  <li class="active"><a href="#">TBD</a></li>
+	  <li><a href="#">TBD</a></li>
+	  <li><a href="#">TBD</a></li>
+	</ul>
+</div><!--/.well -->
+
+{% endblock %} <!--block left_panel-->
+
+{% block right_panel %}
+  <div class="leaderboard">
+	<h1>聆听. 完善. 进步.</h1>
+	<p>请留下您对本网站的建议，谢谢！
+	</p>
+	<br>
+	<p><a class="btn btn-success btn-large">留言区就在下面：</a></p>
+  </div>
+  {% include 'duoshuo.html' %}
+  <footer>
+   <p class="pull-right"><strong><a href="#top">回到顶部</a></strong></p> 
+	<p>&copy; JiaXuan 2016</p>
+  </footer>
+{% endblock %}<!--block right_panel-->

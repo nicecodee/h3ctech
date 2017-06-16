@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'left-panel.html' %}
+	
+{% endblock %}
+	
+{% block right_panel %}
+
+	<img src="{{ url_for('protected_dir', filename='images/server-issue-handle.png') }}">
+	
+	<footer>
+		<p class="pull-right"><strong><a href="#top">回到顶部</a></strong></p>
+		<p>&copy; H3C-Tencent 2016</p>
+	</footer>
+{% endblock %}

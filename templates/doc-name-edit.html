@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'sys-admin-left-panel.html' %}
+	
+{% endblock %}
+	
+{% block right_panel %}
+	
+<div class="leaderboard">
+	<caption><h1>修改文件名</h1></caption>
+	<br>
+	<h4>当前文件名:  <font size="4" face="arial" color="blue">"{{filename}}" </font></h4>   
+	<hr>
+	<h3>新文件名:</h3>
+	<br>
+	
+	
+	<form class="form-horizontal" method ="POST" action="{{ url_for('doc_name_edit', filename=filename) }}">
+		<div class="form-group">
+		  <div class="col-sm-10">
+			<input type="text" class="form-control" id="doc_name" name="doc_name" placeholder="doc_name" autofocus="" >
+		  </div>
+		</div>
+	    <div>
+		 <button type="submit" class="btn btn-success">提交</button>
+		 <a href="{{ url_for('docs_list') }}" class="btn btn-default" role="button">取消</a>
+	    </div>
+	</form>
+	<p>{{error}}</p>
+</div>
+   
+  
+{% endblock %}

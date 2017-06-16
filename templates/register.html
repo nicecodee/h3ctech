@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'main-left-panel.html' %}
+	
+{% endblock %} <!--block left_panel-->
+
+{% block right_panel %}
+
+<div class="leaderboard">
+	<h1>用户注册:</h1>
+	<br>
+	{% from "_formhelpers.html" import render_field %}
+	<form method=post action="/register/">
+		<dl>
+			{{render_field(form.username)}}
+			{{render_field(form.email)}}
+			{{render_field(form.password)}}
+			{{render_field(form.confirm)}}
+			{{render_field(form.accept_tos)}}
+		</dl>
+		<p><input type=submit value=注册></p>
+	</form>
+	
+	{% if error %}
+		<p class="error"><strong>Error:</strong>{{error}}</p>
+	{% endif %}
+</div>
+
+{% endblock %} <!--block right_panel-->

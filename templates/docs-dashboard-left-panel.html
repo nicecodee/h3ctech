@@ -1,0 +1,16 @@
+<div class="well sidebar-nav">
+	<ul class="nav nav-list">
+		<li class="nav-header">文档分类</li>
+		<li><a href="/doc-server-dashboard/"><span class="badge pull-right">{{num_server}}</span>服务器岗</a></li>
+		<li><a href="/doc-network-dashboard/"><span class="badge pull-right">{{num_network}}</span>网络岗</a></li>
+		<li><a href="/doc-inventory-dashboard/"><span class="badge pull-right">{{num_inventory}}</span>资产岗</a></li>
+	</ul>
+	{% if session.auth_type_db == 'ser' or session.auth_type_db == 'net' 
+	or session.auth_type_db == 'inv' or session.auth_type_db == 'adm' 
+	or session.auth_type_db == 'superadm' %}
+	<ul class="nav nav-list">
+		<li class="nav-header">上传文档</li>
+		<li><a href="/doc-upload/">上传文档&nbsp;<span class="glyphicon glyphicon-arrow-up"" aria-hidden="true"></span></a></li>			
+	</ul>
+	{% endif %}	
+</div><!--/.well -->

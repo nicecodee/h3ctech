@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'doc-network-left-panel.html' %}
+	
+{% endblock %}
+	
+{% block right_panel %}
+	
+	<div  align="center">
+		<iframe src="/static/pdfjs-v1.5.347/web/viewer.html?file=/static/docs/network/{{filename}}" frameborder="0" width="97%" height="850"></iframe>
+	</div>
+	
+	<footer>
+<!-- <p class="pull-right"><strong><a href="#top">回到顶部</a></strong></p> -->
+		<p>&copy; JiaXuan 2016</p>
+	</footer>
+{% endblock %}

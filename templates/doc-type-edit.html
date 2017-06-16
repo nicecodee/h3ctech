@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'sys-admin-left-panel.html' %}
+	
+{% endblock %}
+	
+{% block right_panel %}
+	
+<div class="leaderboard">
+	<caption><h1>修改存放类型</h1></caption>
+	<br>
+	<h4>"{{filename}}" 文件， 当前类型:  <font size="4" face="arial" color="blue"> {{old_doc_type}} </font></h4>   
+	<hr>
+	<h3>新类型:</h3>
+	<br>
+	<form class="form-horizontal" method ="POST" action="{{ url_for('doc_type_edit', filename=filename) }}">
+		<div>
+		   <label class="checkbox-inline">
+			  <input type="radio" name="doc_type" value="server" checked> 服务器(server)
+		   </label>
+		   <label class="checkbox-inline">
+			  <input type="radio" name="doc_type" value="network"> 网络(network)
+		   </label>
+		   <label class="checkbox-inline">
+			  <input type="radio" name="doc_type" value="inventory"> 资产(inventory)
+		   </label>
+		</div>
+		
+		<hr>
+	    <div>
+		 <button type="submit" class="btn btn-success">提交</button>
+		 <a href="{{ url_for('docs_list') }}" class="btn btn-default" role="button">取消</a>
+	    </div>
+	</form>
+	<p>{{error}}</p>
+</div>
+   
+  
+{% endblock %}

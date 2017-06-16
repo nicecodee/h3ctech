@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block right_panel %}
+
+	<h4>Woops!!</h4><br>
+	{% if auth_type_db == 'ser' %}
+		<h3>您的用户角色：<font size="4" color="blue">服务器岗</font></h3> 
+	{% elif auth_type_db == 'net' %}
+		<h3>您的用户角色：<font size="4" color="blue">网络岗</font></h3> 
+	{% elif auth_type_db == 'inv' %}
+		<h3>您的用户角色：<font size="4" color="blue">资产岗</font></h3> 
+	{% else %}
+		<h3>您的用户角色：<font size="4" color="blue">普通用户</font></h3> 
+	{% endif %}
+ 
+
+	<h3><font size="4" color="blue">您没有权限访问您角色范围外的页面。</font>
+	如有需要，请<a href="mailto:jia-xuan.liang@h3c.com">发邮件</a>给网站创建者申请权限，谢谢!!</h3>
+	<br>
+	
+	<a href="/"><span class="glyphicon glyphicon-arrow-left"></span>返回首页</a>
+
+
+{% endblock %}
