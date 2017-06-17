@@ -19,7 +19,7 @@ build
 *.png
 *.jpg
 namelist
-weekly*
+/weekly
 *.bak
 config.py
 =======

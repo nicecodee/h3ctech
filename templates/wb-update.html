@@ -50,7 +50,7 @@
 	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
 		<br><br>
 		<h3>更新记录</h3>
-		<p><font size="2" face="arial" color="red">(注意：未经填写直接提交，相当于清空该成员的记录！)</font></p>
+		
 
 		<form action="" class="form-inline" method="post">
 			周六:&nbsp;&nbsp;<input type="text" class="form-control"  name="halfday0"  value="{{member_data[0][1]}}">
@@ -75,9 +75,11 @@
 					<input type="text" class="form-control" name="halfday13"  value="{{member_data[0][14]}}">
 					<br>
 					<br>
-			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<a href="/wb-thisweek/" role="button"><span class="label label-info" >返回</span></a> 
+			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;
+			<input type="button" class="btn btn-default" name="clear" value="清空" onclick="clearForm(this.form);" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/wb-thisweek/" role="button"><span class="label label-info" >查看白板</span></a> 
 		</form>
+				
 	</div>
 </div>
 
