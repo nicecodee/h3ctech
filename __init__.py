@@ -144,7 +144,7 @@ def wb_update(name):
 		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			halfday = range(14)		#用列表存储用户填入的数据，同时删除用户输入字符串两旁的空格		
+			halfday = range(14)		#用列表存储用户填入的数据	
 			halfday[0] = request.form['halfday0']
 			halfday[1] = request.form['halfday1']
 			halfday[2] = request.form['halfday2']
@@ -165,6 +165,7 @@ def wb_update(name):
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
+				halfday[i] = "".join(halfday[i].split())  #删除输入内容中的所有空格，也可用：halfday[i] = halfday[i].replace(" ","")
 				if halfday[i] == "":
 					halfday[i] = "- "
 				else:
