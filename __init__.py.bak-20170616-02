@@ -24,7 +24,7 @@ app.secret_key=SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
 
 #use SQLAlchemy to manage mysql
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:jxlgood@localhost/h3cblog'    
+# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:jxlgood@localhost/h3ctech'    
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 #db = SQLAlchemy(app)
 
@@ -70,31 +70,42 @@ class DelmemberForm(Form):
 	name = TextField(u'删除姓名', [validators.Required()])
 	
 @app.route("/wb-thisweek/")
+@login_required
 def wb_thisweek():
 	try:
 		set_cn_encoding()	
 		
-		#calculate the weekdays based on today's date automatically
-		today = datetime.date.today()
-		start = today + datetime.timedelta(-2 - today.weekday())
-		weekdays = []
-		for i in range(7):
-			tmp_weekday = start + datetime.timedelta(days = i)
-			weekdays.append(tmp_weekday)
-		
-		#fillin the weekly form based on the record automatically
-		path = WEEKLY_PATH + 'weekly_' + str(start)
-		namelist_path = WEEKLY_NAMELIST_PATH + 'namelist'
-		if not os.path.isfile(path):
-			shutil.copy(namelist_path,  path)				
-		with open(path, 'r') as file:
-			name_lines = file.readlines()
-		filedata = []
-		num = len(name_lines)
-		for x in range(num):
-			filedata.append(name_lines[x].split(" "))		
-		
-		return render_template("wb-thisweek.html", title=u'本周白板',num=num, weekdays=weekdays,filedata=filedata)
+		c, conn = connection()
+		c.execute("select * from login_user where username = (%s)", [session['username']])
+	
+		#get the auth_type of first record
+		auth_type_db = c.fetchone()[5]
+	
+		#check auth_type of the logged in user, if not matches, redirect to role_error_page
+		if 'h3c' == auth_type_db or 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
+			#calculate the weekdays based on today's date automatically
+			today = datetime.date.today()
+			start = today + datetime.timedelta(-2 - today.weekday())
+			weekdays = []
+			for i in range(7):
+				tmp_weekday = start + datetime.timedelta(days = i)
+				weekdays.append(tmp_weekday)
+			
+			#fillin the weekly form based on the record automatically
+			path = WEEKLY_PATH + 'weekly_' + str(start)
+			namelist_path = WEEKLY_NAMELIST_PATH + 'namelist'
+			if not os.path.isfile(path):
+				shutil.copy(namelist_path,  path)				
+			with open(path, 'r') as file:
+				name_lines = file.readlines()
+			filedata = []
+			num = len(name_lines)
+			for x in range(num):
+				filedata.append(name_lines[x].split(" "))		
+			
+			return render_template("wb-thisweek.html", title=u'本周白板',num=num, weekdays=weekdays,filedata=filedata)
+		else:
+			return redirect(url_for('role_error_page'))	
 		
 	except Exception as e:
 		return(str(e))
@@ -158,6 +169,7 @@ def wb_thisweek():
 @app.route('/wb-update/<name>/')
 @app.route("/wb-update/") 
 @app.route('/wb-update/<name>/', methods = ['GET','POST'])
+@login_required
 def wb_update(name):
 	try:
 		set_cn_encoding()	
@@ -183,33 +195,40 @@ def wb_update(name):
 		#update personal whiteboard	
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			day6_am = request.form['day6_am']
-			day6_pm = request.form['day6_pm']
-			day7_am = request.form['day7_am']
-			day7_pm = request.form['day7_pm']
-			day1_am = request.form['day1_am']
-			day1_pm = request.form['day1_pm']
-			day2_am = request.form['day2_am']
-			day2_pm = request.form['day2_pm']
-			day3_am = request.form['day3_am']
-			day3_pm = request.form['day3_pm']
-			day4_am = request.form['day4_am']
-			day4_pm = request.form['day4_pm']
-			day5_am = request.form['day5_am']
-			day5_pm = request.form['day5_pm']
+			halfday = range(14)		#用列表存储用户填入的数据		
+			halfday[0] = request.form['halfday0']
+			halfday[1] = request.form['halfday1']
+			halfday[2] = request.form['halfday2']
+			halfday[3] = request.form['halfday3']
+			halfday[4] = request.form['halfday4']
+			halfday[5] = request.form['halfday5']
+			halfday[6] = request.form['halfday6']
+			halfday[7] = request.form['halfday7']
+			halfday[8] = request.form['halfday8']
+			halfday[9] = request.form['halfday9']
+			halfday[10] = request.form['halfday10']
+			halfday[11] = request.form['halfday11']
+			halfday[12] = request.form['halfday12']
+			halfday[13] = request.form['halfday13']
 			
 			old_path = WEEKLY_PATH + 'weekly_' + str(start)
-			new_path = WEEKLY_PATH + 'tmp.log'			
-			data = name + ' ' + day6_am	 + ' ' + day6_pm  + ' ' + day7_am + ' ' + day7_pm  + ' ' \
-			+ day1_am + ' ' + day1_pm + ' ' + day2_am + ' ' + day2_pm + ' ' + day3_am + ' ' \
-			+ day3_pm + ' ' + day4_am + ' ' + day4_pm + ' ' + day5_am + ' ' + day5_pm
+			new_path = WEEKLY_PATH + 'tmp.log'		
 			
+			#把空白内容转换为“- ”，非空白内容后面添加一个空格
+			for i in range(14):
+				if not halfday[i]:
+					halfday[i] = "- "
+				else:
+					halfday[i] = halfday[i] + " "	
+			#列表转换为字符串
+			halfday="".join(halfday)
+			#旧文件换行复制到新文件，遇到需更新的名字时，替换那一行，再写到新文件
 			with open(old_path, 'r') as f, open(new_path, 'w') as fout:
 				for line in f:
 					if line.startswith(name):  #找到匹配的名字，用填在表格的data替换这一行
-						line = data + '\n'
+						line = name + " " + halfday + '\n'
 					fout.write(line)  
-				os.rename(new_path, old_path)
+				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update', name=name))	 
 		return render_template("wb-update.html", title=u'更新白板', form=form, weekdays=weekdays, filedata=filedata)
 		
@@ -219,6 +238,7 @@ def wb_update(name):
 		
 		
 @app.route("/wb-add-member/", methods = ['GET','POST'])
+@login_required
 def wb_add_member():
 	try:
 		set_cn_encoding()	
@@ -250,6 +270,7 @@ def wb_add_member():
 		return(str(e))	
 
 @app.route("/wb-del-member/", methods = ['GET','POST'])
+@login_required
 def wb_del_member():
 	try:
 		set_cn_encoding()	
@@ -293,6 +314,7 @@ def wb_del_member():
 
 		
 @app.route("/wb-list/")
+@login_required
 def wb_list():
 
 	#Get number of weekly whiteboards
@@ -309,6 +331,7 @@ def wb_list():
 
 @app.route('/wb-review/<filename>/')
 @app.route("/wb-review/") 
+@login_required
 def wb_review(filename):
 	try:
 		set_cn_encoding()	
@@ -507,6 +530,8 @@ def write_log_info(info_type):
 @app.route("/")
 def homepage():
 	return  render_template("main.html", title=u'首页')
+	
+
 	
 @app.route("/about-team/")
 def about_team():
@@ -713,36 +738,46 @@ def doc_allowed(filename):
 @login_required
 def doc_upload():
 	try:
-		filename = ''
-		if request.method == 'POST':
-			file = request.files['file']
-			doc_type = (request.values.get("doc_type")).encode('utf-8')
-			to_folder = DOCS_PATH + doc_type + '/'
+	
+		c, conn = connection()
+		c.execute("select * from login_user where username = (%s)", [session['username']])
 		
-			if file and doc_allowed(file.filename):
-				# filename = secure_filename(file.filename)   ###由于secure_filename不能识别中文名，暂停使用
-				filename = (file.filename).encode('utf-8')
-				file.save(os.path.join(to_folder, filename))
-
-			#start to upload
-			send_from_directory(to_folder,filename)	
+		#get the auth_type of first record
+		auth_type_db = c.fetchone()[5]
+		
+		#check auth_type of the logged in user, if not matches, redirect to role_error_page
+		if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
+			filename = ''
+			if request.method == 'POST':
+				file = request.files['file']
+				doc_type = (request.values.get("doc_type")).encode('utf-8')
+				to_folder = DOCS_PATH + doc_type + '/'
 			
-			flash(u'文件上传成功！')
-			#redirect to the page of the doc_type
-			if 'server' == doc_type:
-				return redirect(url_for('doc_server_dashboard'))
-			elif 'network' == doc_type:
-				return redirect(url_for('doc_network_dashboard'))
-			else:
-				return redirect(url_for('doc_inventory_dashboard'))
+				if file and doc_allowed(file.filename):
+					# filename = secure_filename(file.filename)   ###由于secure_filename不能识别中文名，暂停使用
+					filename = (file.filename).encode('utf-8')
+					file.save(os.path.join(to_folder, filename))
 
-		#Get number of docs and display it with "bootstrap badge"
-		num_server = (docs_badges_number())[0]
-		num_network = (docs_badges_number())[1]
-		num_inventory = (docs_badges_number())[2]		
+				#start to upload
+				send_from_directory(to_folder,filename)	
 				
-		return  render_template("doc-upload.html", title=u'文档上传', num_server=num_server, num_network=num_network, num_inventory=num_inventory)	
-		
+				flash(u'文件上传成功！')
+				#redirect to the page of the doc_type
+				if 'server' == doc_type:
+					return redirect(url_for('doc_server_dashboard'))
+				elif 'network' == doc_type:
+					return redirect(url_for('doc_network_dashboard'))
+				else:
+					return redirect(url_for('doc_inventory_dashboard'))
+
+			#Get number of docs and display it with "bootstrap badge"
+			num_server = (docs_badges_number())[0]
+			num_network = (docs_badges_number())[1]
+			num_inventory = (docs_badges_number())[2]		
+					
+			return  render_template("doc-upload.html", title=u'文档上传', num_server=num_server, num_network=num_network, num_inventory=num_inventory)	
+		else:
+			return redirect(url_for('role_error_page'))
 	except Exception as e:
 		# return str(e)
 		flash(u'上传失败！ 请检查上传的文件是否符合要求，再重新尝试!')
@@ -1067,7 +1102,8 @@ def login_page():
 				#redirect to the exact url I want to access
 				# return redirect(session["want_url"])
 				
-				return redirect(url_for('homepage'))
+				#return redirect(url_for('homepage'))
+				return redirect(url_for('wb_thisweek')) #根据实际需要，登陆后直接跳转到白板页
 
 				
 			else:
@@ -1124,7 +1160,8 @@ def register_page():
 				
 				write_log_info('register') #do the logging
 				
-				return redirect(url_for('homepage'))
+				#return redirect(url_for('homepage'))
+				return redirect(url_for('wb_thisweek')) #根据实际需要，注册后直接跳转到白板页
 		
 		return render_template("register.html", title=u'注册', form=form)
 		

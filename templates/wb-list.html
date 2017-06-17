@@ -5,6 +5,7 @@
 	<!-- collapse view -->
 	<a href="/wb-thisweek/" role="button" class="btn btn-info">返回</a> 
 	<br><br>
+	
 	<div class="panel-group" id="accordion">
 	   <div class="panel panel-info">
 		  <div class="panel-heading">
@@ -19,7 +20,7 @@
 				<ul>
 				{% for item in list %}
 					{% if 0 == list.index(item) %}
-						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}&nbsp;&nbsp;<span class="glyphicon glyphicon-star" aria-hidden="true"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
+						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
 					{% else %}
 					   <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a></li>
 					{% endif %}

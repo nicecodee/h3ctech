@@ -11,19 +11,17 @@ import os
 import requests
 import sys 
 import shutil
-#tablib导入会出现Internal Server Error，目前无解
-#import tablib
+import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
 from config import SECRET_KEY, instance_path, LOGS_PATH,SERVER_DOCS_PATH, NETWORK_DOCS_PATH, INVENTORY_DOCS_PATH, \
-      DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS,WEEKLY_PATH,WEEKLY_NAMELIST_PATH
+      DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS,WEEKLY_PATH,WEEKLY_NAMELIST_PATH, WEEKLY_EXCEL_PATH
 
 
 app = Flask(__name__)
 # app.instance_path=instance_path
 app.secret_key=SECRET_KEY         
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
-
 
 #check if user has logged in(it needs to be defined before other functions)
 def login_required(f):
@@ -70,7 +68,7 @@ class DelmemberForm(Form):
 def wb_thisweek():
 	try:
 		set_cn_encoding()	
-			
+		
 		c, conn = connection()
 		c.execute("select * from login_user where username = (%s)", [session['username']])
 	
@@ -105,8 +103,8 @@ def wb_thisweek():
 		
 	except Exception as e:
 		return(str(e))
-
-
+		
+		
 #通过点击人名，跳转到白板更新页面
 @app.route('/wb-update/<name>/')
 @app.route("/wb-update/") 
@@ -203,9 +201,8 @@ def wb_add_member():
 			#在最新的weekly_xxxx-xx-xx里添加该成员	
 			with open(WEEKLY_PATH+files[0], 'ab') as f:
 				f.write(data + '\n') 				
-			
-			flash('成员添加成功!')
-			return redirect(url_for('wb_add_member'))	 
+				
+			return redirect(url_for('wb_thisweek'))	 
 
 		return render_template("wb-add-member.html", title=u'增加成员', form=form)
 		
@@ -242,20 +239,14 @@ def wb_del_member():
 			os.rename(new_path_namelist, old_path_namelist)  #新文件改名为旧文件（相当于覆盖旧文件）
 			#删除最新的weekly_xxxx-xx-xx里的该成员		
 			with open(old_path_weekly, 'r') as f, open(new_path_weekly, 'w') as fout:
-				NAME_EXIST = 0
 				for line in f:
 					name_str = line.split()[0]  #截取姓名
 					if not name == name_str:    #仅当姓名完全匹配时，执行以下步骤
 						fout.write(line)  
-					if name == name_str:
-						NAME_EXIST = 1
-			if NAME_EXIST == 1:
-				os.rename(new_path_weekly, old_path_weekly)		#仅当姓名完全匹配时，新文件改名为旧文件（相当于覆盖旧文件）		
-				flash('成员删除成功!')
-			else:
-				flash('该成员不存在，请输入正确的姓名!')
-			return redirect(url_for('wb_del_member'))
+			os.rename(new_path_weekly, old_path_weekly)		#新文件改名为旧文件（相当于覆盖旧文件）		
 				
+			return redirect(url_for('wb_thisweek'))	 
+
 		return render_template("wb-del-member.html", title=u'删除成员', form=form)
 		
 	except Exception as e:
@@ -324,21 +315,18 @@ def wb_review(filename):
 	except Exception as e:
 		return(str(e))
 
-		
+
+
 #To create a excel file(filename.xlsx)
-def wb_create_xlsx():
+def wb_create_xlsx(filename):
 	try:
 		set_cn_encoding()	
 		
-		filename="weekly_2017-06-10"
 		fn = filename
 		
 		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
-		#start = filename.split("_")[1]
-		start = "2017-06-10"
+		start = filename.split("_")[1]
 		start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
-		start = "2017-06-10"
-		
 		weekdays = []
 		for i in range(7):     #计算该周的所有日期
 			tmp_weekday = start_day + datetime.timedelta(days = i)
@@ -370,8 +358,9 @@ def wb_create_xlsx():
 				
 	except Exception as e:
 		return(str(e))
+
+
 		
-	
 #get the location from user's ip
 def get_ip_info(ip):
 	
