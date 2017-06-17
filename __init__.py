@@ -124,20 +124,27 @@ def wb_update(name):
 			tmp_weekday = start + datetime.timedelta(days = i)
 			weekdays.append(tmp_weekday)
 
-		#fillin the weekly form based on the name automatically
-		path = WEEKLY_PATH + 'weekly_' + str(start)		
+		#页面上方表格，自动列出当前白板记录
+		path = WEEKLY_PATH + 'weekly_' + str(start)	
 		with open(path, 'r') as file:
 			for line in file:
 				if line.startswith(name):
 					data_line=line
 					filedata = []
+					member_data = []
 					filedata.append(data_line.split(" "))
+					#member_data.append(member_data)
+					member_data = filedata
 					break
+		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
+		for i in range(15):
+			if member_data[0][i] == "-":
+				member_data[0][i] = ""
 
-		#update personal whiteboard	
+		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			halfday = range(14)		#用列表存储用户填入的数据		
+			halfday = range(14)		#用列表存储用户填入的数据，同时删除用户输入字符串两旁的空格		
 			halfday[0] = request.form['halfday0']
 			halfday[1] = request.form['halfday1']
 			halfday[2] = request.form['halfday2']
@@ -158,7 +165,7 @@ def wb_update(name):
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
-				if not halfday[i]:
+				if halfday[i] == "":
 					halfday[i] = "- "
 				else:
 					halfday[i] = halfday[i] + " "	
@@ -172,7 +179,8 @@ def wb_update(name):
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update', name=name))	 
-		return render_template("wb-update.html", title=u'更新白板', form=form, weekdays=weekdays, filedata=filedata)
+		return render_template("wb-update.html", title=u'更新白板', form=form, weekdays=weekdays, \
+		filedata=filedata, member_data=member_data)
 		
 	except Exception as e:
 		return(str(e))			

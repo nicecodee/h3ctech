@@ -18,6 +18,9 @@ build
 *.log
 *.png
 *.jpg
+namelist
+weekly*
+*.bak
 config.py
 =======
 # Byte-compiled / optimized / DLL files

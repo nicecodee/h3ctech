@@ -53,28 +53,28 @@
 		<p><font size="2" face="arial" color="red">(注意：未经填写直接提交，相当于清空该成员的记录！)</font></p>
 
 		<form action="" class="form-inline" method="post">
-			<input type="text" class="form-control" placeholder="周六上午" name="halfday0"  value="{{request.form.halfday0}}">
-			<input type="text" class="form-control" placeholder="周六下午" name="halfday1"  value="{{request.form.halfday1}}">
-			<br>                                                                                                          
-			<input type="text" class="form-control" placeholder="周日上午" name="halfday2"  value="{{request.form.halfday2}}">
-			<input type="text" class="form-control" placeholder="周日下午" name="halfday3"  value="{{request.form.halfday3}}">
-			<br>                                                                                                          
-			<input type="text" class="form-control" placeholder="周一上午" name="halfday4"  value="{{request.form.halfday4}}">
-			<input type="text" class="form-control" placeholder="周一下午" name="halfday5"  value="{{request.form.halfday5}}">
-			<br>                                                                                                          
-			<input type="text" class="form-control" placeholder="周二上午" name="halfday6"  value="{{request.form.halfday6}}">
-			<input type="text" class="form-control" placeholder="周二下午" name="halfday7"  value="{{request.form.halfday7}}">
-			<br>                                                                                                          
-			<input type="text" class="form-control" placeholder="周三上午" name="halfday8"  value="{{request.form.halfday8}}">
-			<input type="text" class="form-control" placeholder="周三下午" name="halfday9"  value="{{request.form.halfday9}}">
-			<br>                                                                                                   
-			<input type="text" class="form-control" placeholder="周四上午" name="halfday10"  value="{{request.form.halfday10}}">
-			<input type="text" class="form-control" placeholder="周四下午" name="halfday11"  value="{{request.form.halfday11}}">
-			<br>                                                                                                            
-			<input type="text" class="form-control" placeholder="周五上午" name="halfday12"  value="{{request.form.halfday12}}">
-			<input type="text" class="form-control" placeholder="周五下午" name="halfday13"  value="{{request.form.halfday13}}">
-			<br>
-			<br>
+			周六:&nbsp;&nbsp;<input type="text" class="form-control"  name="halfday0"  value="{{member_data[0][1]}}">
+					<input type="text" class="form-control" name="halfday1"  value="{{member_data[0][2]}}">
+					<br>                                                                                                          
+			周日:&nbsp;&nbsp;<input type="text" class="form-control"  name="halfday2"  value="{{member_data[0][3]}}">
+					<input type="text" class="form-control"  name="halfday3"  value="{{member_data[0][4]}}">
+					<br>                                                                                                          
+			周一:&nbsp;&nbsp;<input type="text" class="form-control" name="halfday4"  value="{{member_data[0][5]}}">
+					<input type="text" class="form-control" name="halfday5"  value="{{member_data[0][6]}}">
+					<br>                                                                                                          
+			周二:&nbsp;&nbsp;<input type="text" class="form-control"  name="halfday6"  value="{{member_data[0][7]}}">
+					<input type="text" class="form-control" name="halfday7"  value="{{member_data[0][8]}}">
+					<br>                                                                                                          
+			周三:&nbsp;&nbsp;<input type="text" class="form-control" name="halfday8"  value="{{member_data[0][9]}}">
+					<input type="text" class="form-control" name="halfday9"  value="{{member_data[0][10]}}">
+					<br>                                                                                                   
+			周四:&nbsp;&nbsp;<input type="text" class="form-control" name="halfday10"  value="{{member_data[0][11]}}">
+					<input type="text" class="form-control"  name="halfday11"  value="{{member_data[0][12]}}">
+					<br>                                                                                                            
+			周五:&nbsp;&nbsp;<input type="text" class="form-control"  name="halfday12"  value="{{member_data[0][13]}}">
+					<input type="text" class="form-control" name="halfday13"  value="{{member_data[0][14]}}">
+					<br>
+					<br>
 			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<a href="/wb-thisweek/" role="button"><span class="label label-info" >返回</span></a> 
 		</form>
