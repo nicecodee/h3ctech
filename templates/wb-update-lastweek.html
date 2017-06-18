@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block left_panel %}
+
+	{% include 'wb-left-panel.html' %}
+	
+{% endblock %} <!--block left_panel-->
+
+{% block right_panel %}
+
+<div class="leaderboard" style="width:95%;">
+	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
+	
+	<h3>当前记录</h3>
+		<table class="table table-hover" border="1">
+		   <!-- <caption><h1>{{fn}}</h1></caption> -->
+		   <thead>
+			  <tr>
+			  <th rowspan="2">姓名</th>
+			  
+			  {% for day in weekdays %}
+					<th colspan="2">{{day}}</th>
+			  {% endfor %}  
+			  
+			  </tr>
+			  <tr>
+				<th colspan="2">星期六</th>
+				<th colspan="2">星期日</th>
+				<th colspan="2">星期一</th>
+				<th colspan="2">星期二</th>
+				<th colspan="2">星期三</th>
+				<th colspan="2">星期四</th>
+				<th colspan="2">星期五</th>
+			  </tr>
+		   </thead>
+		   <tbody>
+				<tr class="active">
+					{% for column in range(15) %}
+						<td> {{ filedata[0][column] }} </td>
+					{% endfor %}
+				</tr>
+		   </tbody>
+		</table>
+	</div>
+</div>
+
+
+
+<div class="leaderboard" style="width: 25%">
+	<div style="position:absolute; width:65%; height:450px; overflow-y:auto">
+		<br><br>
+		<h3>更新记录</h3>
+		
+
+		<form action="" class="form-inline" method="post">
+			周六:&nbsp;&nbsp;
+			<input type="text" class="form-control"  name="halfday0"  value="{{member_data[0][1]}}">
+			<input type="text" class="form-control" name="halfday1"  value="{{member_data[0][2]}}">
+			<br>                                                                                                          
+			周日:&nbsp;&nbsp;
+			<input type="text" class="form-control"  name="halfday2"  value="{{member_data[0][3]}}">
+			<input type="text" class="form-control"  name="halfday3"  value="{{member_data[0][4]}}">
+			<br>                                                                                                          
+			周一:&nbsp;&nbsp;
+			<input type="text" class="form-control" name="halfday4"  value="{{member_data[0][5]}}">
+			<input type="text" class="form-control" name="halfday5"  value="{{member_data[0][6]}}">
+			<br>                                                                                                          
+			周二:&nbsp;&nbsp;
+			<input type="text" class="form-control"  name="halfday6"  value="{{member_data[0][7]}}">
+			<input type="text" class="form-control" name="halfday7"  value="{{member_data[0][8]}}">
+			<br>                                                                                                          
+			周三:&nbsp;&nbsp;
+			<input type="text" class="form-control" name="halfday8"  value="{{member_data[0][9]}}">
+			<input type="text" class="form-control" name="halfday9"  value="{{member_data[0][10]}}">
+			<br>                                                                                                   
+			周四:&nbsp;&nbsp;
+			<input type="text" class="form-control" name="halfday10"  value="{{member_data[0][11]}}">
+			<input type="text" class="form-control"  name="halfday11"  value="{{member_data[0][12]}}">
+			<br>                                                                                                            
+			周五:&nbsp;&nbsp;
+			<input type="text" class="form-control"  name="halfday12"  value="{{member_data[0][13]}}">
+			<input type="text" class="form-control" name="halfday13"  value="{{member_data[0][14]}}">
+			<br><br>
+			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;
+			<input type="button" class="btn btn-default" name="clear" value="清空" onclick="clearForm(this.form);" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<a href="/wb-lastweek/" role="button"><span class="label label-info" >返回上周白板</span></a> 
+		</form>
+				
+	</div>
+</div>
+
+
+<br><br><br><br>
+<br><br><br><br>	
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+<footer>
+<p>&copy; JiaXuan 2016</p>
+</footer>
+{% endblock %}<!--block right_panel-->
