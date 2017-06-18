@@ -68,7 +68,7 @@ class DelmemberForm(Form):
 #get the list of weekly files
 def get_weekly_list():
 	list = []
-	#取得weekly目录下的所有文件（列表）
+	#取得weekly目录下的所有文件名（列表）
 	files = os.listdir(WEEKLY_PATH)
 	#列表按文件名排序
 	files.sort(reverse = True)  
@@ -208,7 +208,7 @@ def wb_update_thisweek(name):
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update_thisweek', name=name))	 
-		return render_template("wb-update-thisweek.html", title=u'更新本周白板', form=form, weekdays=weekdays, \
+		return render_template("wb-update-thisweek.html", title=u'本周白板-更新', form=form, weekdays=weekdays, \
 		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
@@ -292,7 +292,7 @@ def wb_update_lastweek(name):
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update_lastweek', name=name))	 
-		return render_template("wb-update-lastweek.html", title=u'更新上周白板', form=form, weekdays=weekdays, \
+		return render_template("wb-update-lastweek.html", title=u'上周白板-更新', form=form, weekdays=weekdays, \
 		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:

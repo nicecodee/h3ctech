@@ -29,9 +29,15 @@
 			<ul>
 			{% for item in list %}
 				{% if 0 == list.index(item) %}
-					<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
+					<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>
+					{% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %}
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
+					{% endif %}
 				{% else %}
-				   <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
+				   <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>
+				   {% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %}
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
+				   {% endif %}
 				{% endif %}
 			{% endfor %}
 			</ul>
