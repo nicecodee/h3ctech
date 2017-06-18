@@ -22,7 +22,7 @@
 					{% if 0 == list.index(item) %}
 						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
 					{% else %}
-					   <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a></li>
+					   <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a></li>
 					{% endif %}
 				{% endfor %}
 				</ul>

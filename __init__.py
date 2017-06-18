@@ -7,11 +7,10 @@ from MySQLdb import escape_string as thwart
 import gc
 import datetime, time
 from functools import wraps
-import os
+import os, sys
 import requests
-import sys 
 import shutil
-#tablib导入会出现Internal Server Error，目前无解
+#tablib导入uwsgi.log会报错（uwsgi无法load app）,目前无解
 #import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
@@ -23,6 +22,7 @@ app = Flask(__name__)
 # app.instance_path=instance_path
 app.secret_key=SECRET_KEY         
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
+
 
 
 #check if user has logged in(it needs to be defined before other functions)
@@ -335,50 +335,50 @@ def wb_review(filename):
 
 		
 #To create a excel file(filename.xlsx)
-def wb_create_xlsx():
-	try:
-		set_cn_encoding()	
+# def wb_create_xlsx():
+	# try:
+		# set_cn_encoding()	
 		
-		filename="weekly_2017-06-10"
-		fn = filename
+		# filename="weekly_2017-06-10"
+		# fn = filename
 		
-		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
-		#start = filename.split("_")[1]
-		start = "2017-06-10"
-		start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
-		start = "2017-06-10"
+		# #根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
+		# #start = filename.split("_")[1]
+		# start = "2017-06-10"
+		# start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
+		# start = "2017-06-10"
 		
-		weekdays = []
-		for i in range(7):     #计算该周的所有日期
-			tmp_weekday = start_day + datetime.timedelta(days = i)
-			tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
-			weekdays.append(tmp_weekday)
+		# weekdays = []
+		# for i in range(7):     #计算该周的所有日期
+			# tmp_weekday = start_day + datetime.timedelta(days = i)
+			# tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
+			# weekdays.append(tmp_weekday)
 		
-		#自定义tblib的excel hearders
-		j = 0
-		my_headers = range(15)
-		for i in range(15):
-			if i == 0:
-				my_headers[i] = 'NAME'
-				continue
-			if i % 2 == 0:
-				my_headers[i] = '-'
-			else:
-				my_headers[i] = weekdays[j]
-				j = j + 1
+		# #自定义tblib的excel hearders
+		# j = 0
+		# my_headers = range(15)
+		# for i in range(15):
+			# if i == 0:
+				# my_headers[i] = 'NAME'
+				# continue
+			# if i % 2 == 0:
+				# my_headers[i] = '-'
+			# else:
+				# my_headers[i] = weekdays[j]
+				# j = j + 1
 		
-		data=tablib.Dataset()
-		data.headers = my_headers
+		# data=tablib.Dataset()
+		# data.headers = my_headers
 		
-		weekly_file_path = WEEKLY_PATH + fn
-		excel_file_path = WEEKLY_EXCEL_PATH + "weekly_" + start + ".xlsx"
-		with open(weekly_file_path,"r") as f,open(excel_file_path, 'wb') as fout:
-			for line in f:
-				data.append(line.split())
-			fout.write(data.xlsx)
+		# weekly_file_path = WEEKLY_PATH + fn
+		# excel_file_path = WEEKLY_EXCEL_PATH + "weekly_" + start + ".xlsx"
+		# with open(weekly_file_path,"r") as f,open(excel_file_path, 'wb') as fout:
+			# for line in f:
+				# data.append(line.split())
+			# fout.write(data.xlsx)
 				
-	except Exception as e:
-		return(str(e))
+	# except Exception as e:
+		# return(str(e))
 		
 	
 #get the location from user's ip

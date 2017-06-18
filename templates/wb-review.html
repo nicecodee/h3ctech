@@ -20,10 +20,13 @@
 				<ul>
 				{% for item in list %}
 					{% if fn == item %}
-						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a></li>
+						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}&nbsp;&nbsp;<span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+							&nbsp;<a href="/static/weekly/{{ item }}">下载</a>
+						</li>
 					{% else %}
-				
-					 <li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a></li>
+						<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}</a>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}">下载</a>
+						</li>
 					{% endif %}
 				{% endfor %}
 				</ul>
