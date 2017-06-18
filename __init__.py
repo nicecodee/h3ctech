@@ -65,13 +65,29 @@ class AddmemberForm(Form):
 class DelmemberForm(Form):
 	name = TextField(u'删除姓名', [validators.Required()])
 
-	
+#get the list of weekly files
+def get_weekly_list():
+	list = []
+	#取得weekly目录下的所有文件（列表）
+	files = os.listdir(WEEKLY_PATH)
+	#列表按文件名排序
+	files.sort(reverse = True)  
+	for weeklyfile in files:
+		list.append(weeklyfile)
+
+	return list
+
 @app.route('/wb-show/<week>/')
 @app.route("/wb-show/") 
 @login_required
 def wb_show(week):
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 			
 		c, conn = connection()
 		c.execute("select * from login_user where username = (%s)", [session['username']])
@@ -106,7 +122,8 @@ def wb_show(week):
 			for x in range(num):
 				filedata.append(name_lines[x].split(" "))		
 			
-			return render_template("wb-show.html", title=u'查看白板',num=num, weekdays=weekdays,filedata=filedata,week=week)
+			return render_template("wb-show.html", title=u'查看白板',num=num, \
+			weekdays=weekdays,filedata=filedata,week=week, num_wb=num_wb, list=list)
 		else:
 			return redirect(url_for('role_error_page'))	
 		
@@ -121,6 +138,11 @@ def wb_show(week):
 def wb_update_thisweek(name):
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 		
 		#calculate the weekdays based on today's date automatically
 		today = datetime.date.today()
@@ -187,7 +209,7 @@ def wb_update_thisweek(name):
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update_thisweek', name=name))	 
 		return render_template("wb-update-thisweek.html", title=u'更新本周白板', form=form, weekdays=weekdays, \
-		filedata=filedata, member_data=member_data)
+		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))			
@@ -200,6 +222,11 @@ def wb_update_thisweek(name):
 def wb_update_lastweek(name):
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 		
 		#calculate the weekdays based on today's date automatically
 		today = datetime.date.today()
@@ -266,7 +293,7 @@ def wb_update_lastweek(name):
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
 			return redirect(url_for('wb_update_lastweek', name=name))	 
 		return render_template("wb-update-lastweek.html", title=u'更新上周白板', form=form, weekdays=weekdays, \
-		filedata=filedata, member_data=member_data)
+		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))
@@ -278,15 +305,19 @@ def wb_add_member():
 	try:
 		set_cn_encoding()	
 		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
+		
+		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
 		#列表按文件名排序，让最新的weekly_xxxx-xx-xx成为列表第一个元素
 		files.sort(reverse = True)  
 		
-		
 		form = AddmemberForm(request.form)
 		path = WEEKLY_NAMELIST_PATH + 'namelist'
-		
 		if request.method == "POST" and form.validate():
 			name = form.name.data
 			data = name + ' - - - - - - - - - - - - - -'
@@ -300,7 +331,7 @@ def wb_add_member():
 			flash('成员添加成功!')
 			return redirect(url_for('wb_add_member'))	 
 
-		return render_template("wb-add-member.html", title=u'增加成员', form=form)
+		return render_template("wb-add-member.html", title=u'增加成员', form=form, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))	
@@ -310,6 +341,11 @@ def wb_add_member():
 def wb_del_member():
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
@@ -323,7 +359,6 @@ def wb_del_member():
 		old_path_weekly = WEEKLY_PATH + files[0]
 		new_path_weekly = WEEKLY_PATH + 'tmp.log'		
 		
-					
 		if request.method == "POST" and form.validate():
 			name = form.name.data
 			#删除namelist.log里的该成员
@@ -349,27 +384,11 @@ def wb_del_member():
 				flash('该成员不存在，请输入正确的姓名!')
 			return redirect(url_for('wb_del_member'))
 				
-		return render_template("wb-del-member.html", title=u'删除成员', form=form)
+		return render_template("wb-del-member.html", title=u'删除成员', form=form, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))	
-
 		
-@app.route("/wb-list/")
-@login_required
-def wb_list():
-
-	#Get number of weekly whiteboards
-	num_wb = (sysadm_badges_number())[3]
-
-	list = []
-	#取得weekly目录下的所有文件（列表）
-	files = os.listdir(WEEKLY_PATH)
-	#列表按文件名排序
-	files.sort(reverse = True)  
-	for weeklyfile in files:
-		list.append(weeklyfile)
-	return  render_template("wb-list.html", title=u'白板列表', num_wb=num_wb, list=list)		
 
 @app.route('/wb-review/<filename>/')
 @app.route("/wb-review/") 
@@ -379,17 +398,11 @@ def wb_review(filename):
 		set_cn_encoding()	
 		
 		fn = filename
+
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
-		
-		
-		list = []
-		#取得weekly目录下的所有文件（列表）
-		files = os.listdir(WEEKLY_PATH)
-		#列表按文件名排序,显示在页面左栏
-		files.sort(reverse = True)  
-		for weeklyfile in files:
-			list.append(weeklyfile)		
+		#Get the list of weekly files
+		list = get_weekly_list()		
 		
 		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
 		start = filename.split("_")[1]
