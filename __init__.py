@@ -64,10 +64,12 @@ class AddmemberForm(Form):
 	
 class DelmemberForm(Form):
 	name = TextField(u'删除姓名', [validators.Required()])
+
 	
-@app.route("/wb-thisweek/")
+@app.route('/wb-show/<week>/')
+@app.route("/wb-show/") 
 @login_required
-def wb_thisweek():
+def wb_show(week):
 	try:
 		set_cn_encoding()	
 			
@@ -81,7 +83,10 @@ def wb_thisweek():
 		if 'h3c' == auth_type_db or 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
 			#calculate the weekdays based on today's date automatically
 			today = datetime.date.today()
-			start = today + datetime.timedelta(-2 - today.weekday())
+			if week == "thisweek":
+				start = today + datetime.timedelta(-2 - today.weekday())
+			if week == "lastweek":
+				start = today + datetime.timedelta(-9 - today.weekday())
 			weekdays = []
 			for i in range(7):
 				tmp_weekday = start + datetime.timedelta(days = i)
@@ -101,50 +106,12 @@ def wb_thisweek():
 			for x in range(num):
 				filedata.append(name_lines[x].split(" "))		
 			
-			return render_template("wb-thisweek.html", title=u'本周白板',num=num, weekdays=weekdays,filedata=filedata)
+			return render_template("wb-show.html", title=u'查看白板',num=num, weekdays=weekdays,filedata=filedata,week=week)
 		else:
 			return redirect(url_for('role_error_page'))	
 		
 	except Exception as e:
-		return(str(e))
-
-@app.route("/wb-lastweek/")
-@login_required
-def wb_lastweek():
-	try:
-		set_cn_encoding()	
-			
-		c, conn = connection()
-		c.execute("select * from login_user where username = (%s)", [session['username']])
-	
-		#get the auth_type of first record
-		auth_type_db = c.fetchone()[5]
-	
-		#check auth_type of the logged in user, if not matches, redirect to role_error_page
-		if 'h3c' == auth_type_db or 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
-			#calculate the weekdays based on today's date automatically
-			today = datetime.date.today()
-			start = today + datetime.timedelta(-9 - today.weekday())
-			weekdays = []
-			for i in range(7):
-				tmp_weekday = start + datetime.timedelta(days = i)
-				weekdays.append(tmp_weekday)
-			
-			#fillin the weekly form based on the record automatically
-			path = WEEKLY_PATH + 'weekly_' + str(start)				
-			with open(path, 'r') as file:
-				name_lines = file.readlines()
-			filedata = []
-			num = len(name_lines)
-			for x in range(num):
-				filedata.append(name_lines[x].split(" "))		
-			
-			return render_template("wb-lastweek.html", title=u'上周白板',num=num, weekdays=weekdays,filedata=filedata)
-		else:
-			return redirect(url_for('role_error_page'))	
-		
-	except Exception as e:
-		return(str(e))		
+		return(str(e))	
 
 #通过点击人名，跳转到本周白板更新页面
 @app.route('/wb-update-thisweek/<name>/')
@@ -1226,7 +1193,7 @@ def login_page():
 				# return redirect(session["want_url"])
 				
 				#return redirect(url_for('homepage'))
-				return redirect(url_for('wb_thisweek')) #根据实际需要，登陆后直接跳转到白板页
+				return redirect(url_for('wb_show', week="thisweek")) #根据实际需要，登陆后直接跳转到白板页
 
 				
 			else:
@@ -1284,7 +1251,7 @@ def register_page():
 				write_log_info('register') #do the logging
 				
 				#return redirect(url_for('homepage'))
-				return redirect(url_for('wb_thisweek')) #根据实际需要，注册后直接跳转到白板页
+				return redirect(url_for('wb_show')) #根据实际需要，注册后直接跳转到白板页
 		
 		return render_template("register.html", title=u'注册', form=form)
 		

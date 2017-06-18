@@ -58,7 +58,7 @@
 			  <ul class="nav navbar-nav">
 				<li><a href="/">首页 <span class="sr-only">(current)</span></a></li>
 				<li><a href="/comments/">留言板</a></li>
-			    <li><a href="/wb-thisweek/">白板</a></li>
+				<li><a href="{{ url_for('wb_show',week='thisweek') }}">白板</a></li>
 				{% if session.logged_in %}
 					{% if session.auth_type_db == 'superadm' %}
 						<li><a href="/about-team/">团队介绍</a></li>
