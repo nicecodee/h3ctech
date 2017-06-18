@@ -24,7 +24,6 @@ app.secret_key=SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
 
 
-
 #check if user has logged in(it needs to be defined before other functions)
 def login_required(f):
 	@wraps(f)
@@ -38,8 +37,7 @@ def login_required(f):
 			flash(u'请您先登陆！')
 			return redirect(url_for('login_page'))			
 			
-	return wrap
-
+	return wrap	
 	
 class WhiteboardForm(Form):
 	name = TextField(u'姓名', [validators.Required()])
@@ -122,7 +120,11 @@ def wb_show(week):
 			for x in range(num):
 				filedata.append(name_lines[x].split(" "))		
 			
-			return render_template("wb-show.html", title=u'查看白板',num=num, \
+			if week == "thisweek":
+				title = u'本周白板'
+			else:
+				title = u'上周白板'
+			return render_template("wb-show.html", title=title,num=num, \
 			weekdays=weekdays,filedata=filedata,week=week, num_wb=num_wb, list=list)
 		else:
 			return redirect(url_for('role_error_page'))	
