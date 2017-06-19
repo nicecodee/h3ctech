@@ -1,24 +1,19 @@
 {% extends "layout.html" %}
 
 {% block left_panel %}
-<div class="well sidebar-nav">
-	<ul class="nav nav-list">
-	  <li class="nav-header">h3cTech</li>
-	  <li class="active"><a href="/">留言区</a></li>
-	  <li><a href="{{ url_for('wb_show',week='thisweek') }}">白板</a></li>
-	</ul>
-</div><!--/.well -->
+
+	{% include 'main-left-panel.html' %}
 
 {% endblock %} <!--block left_panel-->
 
 {% block right_panel %}
   <div class="leaderboard">
 	<h1>Free.to.Talk.</h1>
-	<p>欢迎在以下评论区畅所欲言！
-	<h6>（注：本站暂时使用Disqus评论系统（需要翻墙））</h6>
+	<p>欢迎在以下评论区留言：
+	<h6>（注：本站使用Disqus评论系统，您有可能看不到评论区（需要翻墙））</h6>
 	</p>
 	<br><br><br>
-	<p><a class="btn btn-success btn-large">或许你在本页面什么都没看到，但评论区确实就在下面 :) ...Beyond the Great Wall, you could see BIGGER！</a></p>
+	<p><a class="btn btn-success btn-large">OUTSIDE the Great Wall, u'll see much MORE...</a></p>
   </div>
   
 

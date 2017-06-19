@@ -1,19 +1,13 @@
 {% extends "layout.html" %}
 
 {% block left_panel %}
-  <div class="well sidebar-nav">
+<div class="well sidebar-nav">
 	<ul class="nav nav-list">
-	  <li class="nav-header">腾讯外包SOW</li>
-	  <li class="active"><a href="#">高压线</a></li>
-	  <li><a href="#">服务器</a></li>
-	  <li><a href="#">网络</a></li>
-	  <li><a href="#">资产</a></li>
-	  <li class="nav-header">流程规范</li>
-	  <li><a href="#">人员审计</a></li>
-	  <li><a href="#">流程审计</a></li>
-	  <li><a href="#">工作质量</a></li>
-   </ul>
-  </div><!--/.well -->
+	  <li class="nav-header">h3cTech</li>
+	  <li class="active"><a href="/">留言区</a></li>
+	  <li><a href="{{ url_for('wb_show',week='thisweek') }}">白板</a></li>
+	</ul>
+</div><!--/.well -->
 {% endblock %} <!--block left_panel-->
 
 {% block right_panel %}
@@ -21,7 +15,7 @@
 	<h1>用户隐私协议</h1>
 	<p>	尊敬的用户，欢迎阅读本协议：<br>
 
-以下是本网站（www.h3cblog.tk）的隐私协议，具有合同效力。您必须完全同意以下所有条款并完成个人资料的填写。您使用服务的行为将视为对本协议的接受，并同意接受本协议各项条款的约束。
+以下是本网站（www.h3ctech.tk）的隐私协议，具有合同效力。您必须完全同意以下所有条款并完成个人资料的填写。您使用服务的行为将视为对本协议的接受，并同意接受本协议各项条款的约束。
 
 用户必须合法使用网络服务，不作非法用途，自觉维护本网站的声誉，遵守所有使用网络服务的网络协议、规定、程序和惯例。
 
@@ -36,7 +30,4 @@
 	<p><a class="btn btn-success btn-large">注册之前，请认真阅读</a></p>
   </div>
   <hr>
-  <footer>
-	<p>&copy; JiaXuan 2016</p>
-  </footer>
 {% endblock %}<!--block right_panel-->

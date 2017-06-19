@@ -34,7 +34,6 @@ def login_required(f):
 			#record the url I want to access
 			# session["want_url"] = request.url
 			
-			flash(u'请您先登陆！')
 			return redirect(url_for('login_page'))			
 			
 	return wrap	
@@ -167,10 +166,9 @@ def wb_update_thisweek(name):
 					member_data = filedata
 					break
 		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
-		for i in range(15):
+		for i in range(1,15):
 			if member_data[0][i] == "-":
 				member_data[0][i] = ""
-
 		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
@@ -634,7 +632,7 @@ def write_log_info(info_type):
 	
 @app.route("/")
 def homepage():
-	return  render_template("main.html", title=u'首页')
+	return  render_template("main.html", title=u'留言区')
 	
 
 	
@@ -1202,7 +1200,7 @@ def login_page():
 				session['auth_type_db'] = auth_type_db
 				
 				write_log_info('login')  #do the logging
-				flash(u"您已成功登陆!")
+				#flash(u"您已成功登陆!")
 				
 				#redirect to the exact url I want to access
 				# return redirect(session["want_url"])
@@ -1266,7 +1264,7 @@ def register_page():
 				write_log_info('register') #do the logging
 				
 				#return redirect(url_for('homepage'))
-				return redirect(url_for('wb_show')) #根据实际需要，注册后直接跳转到白板页
+				return redirect(url_for('wb_show', week='thisweek')) #根据实际需要，注册后直接跳转到白板页
 		
 		return render_template("register.html", title=u'注册', form=form)
 		
