@@ -37,6 +37,11 @@ def login_required(f):
 			return redirect(url_for('login_page'))			
 			
 	return wrap	
+
+#solve the chinese code problem
+def	set_cn_encoding():
+	reload(sys)
+	sys.setdefaultencoding('utf-8')	
 	
 class WhiteboardForm(Form):
 	name = TextField(u'姓名', [validators.Required()])
@@ -498,10 +503,7 @@ def get_ip_info(ip):
 	return ip_info
 		
 	
-#solve the chinese code problem
-def	set_cn_encoding():
-	reload(sys)
-	sys.setdefaultencoding('utf-8')
+
 
 
 #create dir tree-view
@@ -628,6 +630,9 @@ def write_log_info(info_type):
 	# except Exception as e:
 		# return redirect(url_for('homepage'))
 
+@app.route("/test/")
+def testpage():
+	return  render_template("test.html", title=u'测试页面')
 		
 	
 @app.route("/")
