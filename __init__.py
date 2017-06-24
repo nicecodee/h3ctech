@@ -194,7 +194,7 @@ def wb_update_thisweek(name):
 			halfday[13] = request.form['halfday13']
 			
 			old_path = WEEKLY_PATH + 'weekly_' + str(start)
-			new_path = WEEKLY_PATH + 'tmp.log'		
+			new_path = WEEKLY_PATH + 'tmp_upt_thisweek.log'		
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
@@ -278,7 +278,7 @@ def wb_update_lastweek(name):
 			halfday[13] = request.form['halfday13']
 			
 			old_path = WEEKLY_PATH + 'weekly_' + str(start)
-			new_path = WEEKLY_PATH + 'tmp.log'		
+			new_path = WEEKLY_PATH + 'tmp_upt_lastweek.log'		
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
@@ -362,7 +362,7 @@ def wb_del_member():
 		new_path_namelist = WEEKLY_NAMELIST_PATH + 'tmpfile.log'
 		
 		old_path_weekly = WEEKLY_PATH + files[0]
-		new_path_weekly = WEEKLY_PATH + 'tmp.log'		
+		new_path_weekly = WEEKLY_PATH + 'tmp_del_member.log'		
 		
 		if request.method == "POST" and form.validate():
 			name = form.name.data
@@ -370,7 +370,7 @@ def wb_del_member():
 			with open(old_path_namelist, 'r') as f, open(new_path_namelist, 'w') as fout:
 				for line in f:
 					name_str = line.split()[0]  #截取姓名
-					if not name == name_str:    #仅当姓名完全匹配时，执行以下步骤
+					if not name == name_str:    #姓名不匹配时，写入新文件
 						fout.write(line)  
 			os.rename(new_path_namelist, old_path_namelist)  #新文件改名为旧文件（相当于覆盖旧文件）
 			#删除最新的weekly_xxxx-xx-xx里的该成员		
@@ -378,15 +378,17 @@ def wb_del_member():
 				NAME_EXIST = 0
 				for line in f:
 					name_str = line.split()[0]  #截取姓名
-					if not name == name_str:    #仅当姓名完全匹配时，执行以下步骤
+					if not name == name_str:    #姓名不匹配时，写入新文件
 						fout.write(line)  
 					if name == name_str:
 						NAME_EXIST = 1
-			if NAME_EXIST == 1:
-				os.rename(new_path_weekly, old_path_weekly)		#仅当姓名完全匹配时，新文件改名为旧文件（相当于覆盖旧文件）		
+			if NAME_EXIST == 1:     #仅当姓名完全匹配时，新文件改名为旧文件（相当于覆盖旧文件）	
+				os.rename(new_path_weekly, old_path_weekly)	
 				flash('成员删除成功!')
-			else:
+			else:					#姓名不匹配，删除新文件（即临时文件）
+				os.remove(new_path_weekly)
 				flash('该成员不存在，请输入正确的姓名!')
+			
 			return redirect(url_for('wb_del_member'))
 				
 		return render_template("wb-del-member.html", title=u'删除成员', form=form, num_wb=num_wb, list=list)

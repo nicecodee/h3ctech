@@ -4,14 +4,14 @@
 	
 <div class="row">
 	<!-- left panel: collapse view -->
-   <div class="col-sm-6 col-md-2">
+   <div class="col-sm-6 col-md-3">
 		<!-- collapse view -->
 		<div class="panel-group" id="accordion">
 		   <div class="panel panel-info">
 			  <div class="panel-heading">
 				 <h4 class="panel-title">
 					<a data-toggle="collapse" data-parent="#accordion" 
-					   href="#collapseOne">日志列表（点击收起列表）
+					   href="#collapseOne">日志列表(展开/收起)
 					</a><span class="badge pull-right">{{num_logs}}</span>
 				 </h4>
 			  </div>
@@ -39,10 +39,10 @@
    </div><!-- left panel end -->
    
    <!-- right panel: table content -->
-   <div class="col-sm-6 col-md-10">
-		<div class="leaderboard" style="width:90%;height:65%; overflow-y:auto" id="center">
+   <div class="col-sm-6 col-md-9"> 
+		<div class="leaderboard" style="width:95%;height:65%; overflow-y:auto" id="center">
 			<caption><h1>{{fn}}</h1></caption>
-			<table class="table table-hover">
+			<table class="table table-striped" border="1">
 			   <!-- <caption><h1>{{fn}}</h1></caption> -->
 			   <thead>
 				  <tr>
