@@ -1,16 +1,6 @@
 {% extends "layout.html" %}
 
-{% block left_panel %}
-<div class="well sidebar-nav">
-	<ul class="nav nav-list">
-	  <li class="nav-header">h3cTech</li>
-	  <li class="active"><a href="/">留言区</a></li>
-	  <li><a href="{{ url_for('wb_show',week='thisweek') }}">白板</a></li>
-	</ul>
-</div><!--/.well -->
-{% endblock %} <!--block left_panel-->
-
-{% block right_panel %}
+{% block page_panel %}
   <div class="leaderboard">
 	<h1>用户隐私协议</h1>
 	<p>	尊敬的用户，欢迎阅读本协议：<br>
@@ -30,4 +20,4 @@
 	<p><a class="btn btn-success btn-large">注册之前，请认真阅读</a></p>
   </div>
   <hr>
-{% endblock %}<!--block right_panel-->
+{% endblock %}<!--block page_panel-->

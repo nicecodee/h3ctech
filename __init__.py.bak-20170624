@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 from flask import Flask, render_template, flash, request, url_for, session,redirect, session, send_from_directory
-#from flask.ext.sqlalchemy import SQLAlchemy
 from wtforms import Form, BooleanField, TextField, PasswordField, validators, RadioField, SubmitField
 from wtforms.validators import DataRequired, Length
 from passlib.hash import sha256_crypt
@@ -8,10 +7,11 @@ from MySQLdb import escape_string as thwart
 import gc
 import datetime, time
 from functools import wraps
-import os
+import os, sys
 import requests
-import sys 
 import shutil
+#tablib导入uwsgi.log会报错（uwsgi无法load app）,目前无解
+#import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
 from config import SECRET_KEY, instance_path, LOGS_PATH,SERVER_DOCS_PATH, NETWORK_DOCS_PATH, INVENTORY_DOCS_PATH, \
@@ -22,11 +22,6 @@ app = Flask(__name__)
 # app.instance_path=instance_path
 app.secret_key=SECRET_KEY         
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
-
-#use SQLAlchemy to manage mysql
-# app.config['SQLALCHEMY_DATABASE_URI'] =  'mysql://root:jxlgood@localhost/h3ctech'    
-#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-#db = SQLAlchemy(app)
 
 
 #check if user has logged in(it needs to be defined before other functions)
@@ -39,11 +34,14 @@ def login_required(f):
 			#record the url I want to access
 			# session["want_url"] = request.url
 			
-			flash(u'请您先登陆！')
 			return redirect(url_for('login_page'))			
 			
-	return wrap
+	return wrap	
 
+#solve the chinese code problem
+def	set_cn_encoding():
+	reload(sys)
+	sys.setdefaultencoding('utf-8')	
 	
 class WhiteboardForm(Form):
 	name = TextField(u'姓名', [validators.Required()])
@@ -68,13 +66,31 @@ class AddmemberForm(Form):
 	
 class DelmemberForm(Form):
 	name = TextField(u'删除姓名', [validators.Required()])
-	
-@app.route("/wb-thisweek/")
+
+#get the list of weekly files
+def get_weekly_list():
+	list = []
+	#取得weekly目录下的所有文件名（列表）
+	files = os.listdir(WEEKLY_PATH)
+	#列表按文件名排序
+	files.sort(reverse = True)  
+	for weeklyfile in files:
+		list.append(weeklyfile)
+
+	return list
+
+@app.route('/wb-show/<week>/')
+@app.route("/wb-show/") 
 @login_required
-def wb_thisweek():
+def wb_show(week):
 	try:
 		set_cn_encoding()	
 		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
+			
 		c, conn = connection()
 		c.execute("select * from login_user where username = (%s)", [session['username']])
 	
@@ -85,17 +101,22 @@ def wb_thisweek():
 		if 'h3c' == auth_type_db or 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
 			#calculate the weekdays based on today's date automatically
 			today = datetime.date.today()
-			start = today + datetime.timedelta(-2 - today.weekday())
+			if week == "thisweek":
+				start = today + datetime.timedelta(-2 - today.weekday())
+			if week == "lastweek":
+				start = today + datetime.timedelta(-9 - today.weekday())
 			weekdays = []
 			for i in range(7):
 				tmp_weekday = start + datetime.timedelta(days = i)
 				weekdays.append(tmp_weekday)
 			
-			#fillin the weekly form based on the record automatically
 			path = WEEKLY_PATH + 'weekly_' + str(start)
+			#if this week's record does not exist, create it by copying namelist file
 			namelist_path = WEEKLY_NAMELIST_PATH + 'namelist'
 			if not os.path.isfile(path):
-				shutil.copy(namelist_path,  path)				
+				shutil.copy(namelist_path,  path)	
+				
+			#fillin the weekly form based on the record automatically
 			with open(path, 'r') as file:
 				name_lines = file.readlines()
 			filedata = []
@@ -103,76 +124,31 @@ def wb_thisweek():
 			for x in range(num):
 				filedata.append(name_lines[x].split(" "))		
 			
-			return render_template("wb-thisweek.html", title=u'本周白板',num=num, weekdays=weekdays,filedata=filedata)
+			if week == "thisweek":
+				title = u'本周白板'
+			else:
+				title = u'上周白板'
+			return render_template("wb-show.html", title=title,num=num, \
+			weekdays=weekdays,filedata=filedata,week=week, num_wb=num_wb, list=list)
 		else:
 			return redirect(url_for('role_error_page'))	
 		
 	except Exception as e:
-		return(str(e))
+		return(str(e))	
 
-# 已弃用：独立页面的白板更新(不能通过点击人名跳转到更新页面，对应于wb-update(独立页面).html）
-# @app.route("/wb-update/", methods = ['GET','POST'])  
-# def wb_update():
-	# try:
-		# set_cn_encoding()	
-		
-		# #calculate the weekdays based on today's date automatically
-		# today = datetime.date.today()
-		# start = today + datetime.timedelta(-2 - today.weekday())
-		# weekdays = []
-		# for i in range(7):     #计算该周的所有日期
-			# tmp_weekday = start + datetime.timedelta(days = i)
-			# weekdays.append(tmp_weekday)
-			
-		# form = WhiteboardForm(request.form)
-		# if request.method == "POST" and form.validate():
-			# name = form.name.data
-			# day6_am = form.day6_am.data
-			# day6_pm = form.day6_pm.data
-			# day7_am = form.day7_am.data
-			# day7_pm = form.day7_pm.data
-			# day1_am = form.day1_am.data
-			# day1_pm = form.day1_pm.data
-			# day2_am = form.day2_am.data
-			# day2_pm = form.day2_pm.data
-			# day3_am = form.day3_am.data
-			# day3_pm = form.day3_pm.data
-			# day4_am = form.day4_am.data
-			# day4_pm = form.day4_pm.data
-			# day5_am = form.day5_am.data
-			# day5_pm = form.day5_pm.data
-			
-			# old_path = WEEKLY_PATH + 'weekly_' + str(start)
-			# new_path = WEEKLY_PATH + 'tmp.log'			
-			# data = name + ' ' + day6_am	 + ' ' + day6_pm  + ' ' + day7_am + ' ' + day7_pm  + ' ' \
-			# + day1_am + ' ' + day1_pm + ' ' + day2_am + ' ' + day2_pm + ' ' + day3_am + ' ' \
-			# + day3_pm + ' ' + day4_am + ' ' + day4_pm + ' ' + day5_am + ' ' + day5_pm
-			
-			# with open(old_path, 'r') as f, open(new_path, 'w') as fout:
-				# NAME_EXIST = 0
-				# for line in f:
-					# if line.startswith(name):
-						# line = data + '\n'
-						# NAME_EXIST = 1
-					# fout.write(line)  
-				# if NAME_EXIST == 1:
-					# os.rename(new_path, old_path)
-					# return redirect(url_for('wb_thisweek')) #return to wb_thisweek if NAME_EXIST = 1
-				# else:
-					# return redirect(url_for('wb_update'))	#return to wb_update if NAME_EXIST = 0
-		# return render_template("wb-update.html", title=u'更新白板', form=form, weekdays=weekdays)
-		
-	# except Exception as e:
-		# return(str(e))		
-
-#可通过点击人名，跳转到白板更新页面
-@app.route('/wb-update/<name>/')
-@app.route("/wb-update/") 
-@app.route('/wb-update/<name>/', methods = ['GET','POST'])
+#通过点击人名，跳转到本周白板更新页面
+@app.route('/wb-update-thisweek/<name>/')
+@app.route("/wb-update-thisweek/") 
+@app.route('/wb-update-thisweek/<name>/', methods = ['GET','POST'])
 @login_required
-def wb_update(name):
+def wb_update_thisweek(name):
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 		
 		#calculate the weekdays based on today's date automatically
 		today = datetime.date.today()
@@ -182,20 +158,26 @@ def wb_update(name):
 			tmp_weekday = start + datetime.timedelta(days = i)
 			weekdays.append(tmp_weekday)
 
-		#fillin the weekly form based on the name automatically
-		path = WEEKLY_PATH + 'weekly_' + str(start)		
+		#页面上方表格，自动列出当前白板记录
+		path = WEEKLY_PATH + 'weekly_' + str(start)	
 		with open(path, 'r') as file:
 			for line in file:
 				if line.startswith(name):
 					data_line=line
 					filedata = []
+					member_data = []
 					filedata.append(data_line.split(" "))
+					#member_data.append(member_data)
+					member_data = filedata
 					break
-
-		#update personal whiteboard	
+		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
+		for i in range(1,15):
+			if member_data[0][i] == "-":
+				member_data[0][i] = ""
+		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			halfday = range(14)		#用列表存储用户填入的数据		
+			halfday = range(14)		#用列表存储用户填入的数据	
 			halfday[0] = request.form['halfday0']
 			halfday[1] = request.form['halfday1']
 			halfday[2] = request.form['halfday2']
@@ -216,7 +198,8 @@ def wb_update(name):
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
-				if not halfday[i]:
+				halfday[i] = "".join(halfday[i].split())  #删除输入内容中的所有空格，也可用：halfday[i] = halfday[i].replace(" ","")
+				if halfday[i] == "":
 					halfday[i] = "- "
 				else:
 					halfday[i] = halfday[i] + " "	
@@ -229,12 +212,96 @@ def wb_update(name):
 						line = name + " " + halfday + '\n'
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
-			return redirect(url_for('wb_update', name=name))	 
-		return render_template("wb-update.html", title=u'更新白板', form=form, weekdays=weekdays, filedata=filedata)
+			return redirect(url_for('wb_update_thisweek', name=name))	 
+		return render_template("wb-update-thisweek.html", title=u'本周白板-更新', form=form, weekdays=weekdays, \
+		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))			
 		
+#通过点击人名，跳转到上周白板更新页面
+@app.route('/wb-update-lastweek/<name>/')
+@app.route("/wb-update-lastweek/") 
+@app.route('/wb-update-lastweek/<name>/', methods = ['GET','POST'])
+@login_required
+def wb_update_lastweek(name):
+	try:
+		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
+		
+		#calculate the weekdays based on today's date automatically
+		today = datetime.date.today()
+		start = today + datetime.timedelta(-9 - today.weekday())
+		weekdays = []
+		for i in range(7):     #计算该周的所有日期
+			tmp_weekday = start + datetime.timedelta(days = i)
+			weekdays.append(tmp_weekday)
+
+		#页面上方表格，自动列出当前白板记录
+		path = WEEKLY_PATH + 'weekly_' + str(start)	
+		with open(path, 'r') as file:
+			for line in file:
+				if line.startswith(name):
+					data_line=line
+					filedata = []
+					member_data = []
+					filedata.append(data_line.split(" "))
+					#member_data.append(member_data)
+					member_data = filedata
+					break
+		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
+		for i in range(15):
+			if member_data[0][i] == "-":
+				member_data[0][i] = ""
+
+		#页面下方表格，用于更新白板记录
+		form = WhiteboardForm(request.form)
+		if request.method == "POST":
+			halfday = range(14)		#用列表存储用户填入的数据	
+			halfday[0] = request.form['halfday0']
+			halfday[1] = request.form['halfday1']
+			halfday[2] = request.form['halfday2']
+			halfday[3] = request.form['halfday3']
+			halfday[4] = request.form['halfday4']
+			halfday[5] = request.form['halfday5']
+			halfday[6] = request.form['halfday6']
+			halfday[7] = request.form['halfday7']
+			halfday[8] = request.form['halfday8']
+			halfday[9] = request.form['halfday9']
+			halfday[10] = request.form['halfday10']
+			halfday[11] = request.form['halfday11']
+			halfday[12] = request.form['halfday12']
+			halfday[13] = request.form['halfday13']
+			
+			old_path = WEEKLY_PATH + 'weekly_' + str(start)
+			new_path = WEEKLY_PATH + 'tmp.log'		
+			
+			#把空白内容转换为“- ”，非空白内容后面添加一个空格
+			for i in range(14):
+				halfday[i] = "".join(halfday[i].split())  #删除输入内容中的所有空格，也可用：halfday[i] = halfday[i].replace(" ","")
+				if halfday[i] == "":
+					halfday[i] = "- "
+				else:
+					halfday[i] = halfday[i] + " "	
+			#列表转换为字符串
+			halfday="".join(halfday)
+			#旧文件换行复制到新文件，遇到需更新的名字时，替换那一行，再写到新文件
+			with open(old_path, 'r') as f, open(new_path, 'w') as fout:
+				for line in f:
+					if line.startswith(name):  #找到匹配的名字，用填在表格的data替换这一行
+						line = name + " " + halfday + '\n'
+					fout.write(line)  
+				os.rename(new_path, old_path)  #新文件改回为原文件的名字
+			return redirect(url_for('wb_update_lastweek', name=name))	 
+		return render_template("wb-update-lastweek.html", title=u'上周白板-更新', form=form, weekdays=weekdays, \
+		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
+		
+	except Exception as e:
+		return(str(e))
 		
 		
 @app.route("/wb-add-member/", methods = ['GET','POST'])
@@ -243,15 +310,19 @@ def wb_add_member():
 	try:
 		set_cn_encoding()	
 		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
+		
+		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
 		#列表按文件名排序，让最新的weekly_xxxx-xx-xx成为列表第一个元素
 		files.sort(reverse = True)  
 		
-		
 		form = AddmemberForm(request.form)
 		path = WEEKLY_NAMELIST_PATH + 'namelist'
-		
 		if request.method == "POST" and form.validate():
 			name = form.name.data
 			data = name + ' - - - - - - - - - - - - - -'
@@ -261,10 +332,11 @@ def wb_add_member():
 			#在最新的weekly_xxxx-xx-xx里添加该成员	
 			with open(WEEKLY_PATH+files[0], 'ab') as f:
 				f.write(data + '\n') 				
-				
-			return redirect(url_for('wb_thisweek'))	 
+			
+			flash('成员添加成功!')
+			return redirect(url_for('wb_add_member'))	 
 
-		return render_template("wb-add-member.html", title=u'增加成员', form=form)
+		return render_template("wb-add-member.html", title=u'增加成员', form=form, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))	
@@ -274,6 +346,11 @@ def wb_add_member():
 def wb_del_member():
 	try:
 		set_cn_encoding()	
+		
+		#Get number of weekly whiteboards
+		num_wb = (sysadm_badges_number())[3]
+		#Get the list of weekly files
+		list = get_weekly_list()
 		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
@@ -287,7 +364,6 @@ def wb_del_member():
 		old_path_weekly = WEEKLY_PATH + files[0]
 		new_path_weekly = WEEKLY_PATH + 'tmp.log'		
 		
-					
 		if request.method == "POST" and form.validate():
 			name = form.name.data
 			#删除namelist.log里的该成员
@@ -299,35 +375,25 @@ def wb_del_member():
 			os.rename(new_path_namelist, old_path_namelist)  #新文件改名为旧文件（相当于覆盖旧文件）
 			#删除最新的weekly_xxxx-xx-xx里的该成员		
 			with open(old_path_weekly, 'r') as f, open(new_path_weekly, 'w') as fout:
+				NAME_EXIST = 0
 				for line in f:
 					name_str = line.split()[0]  #截取姓名
 					if not name == name_str:    #仅当姓名完全匹配时，执行以下步骤
 						fout.write(line)  
-			os.rename(new_path_weekly, old_path_weekly)		#新文件改名为旧文件（相当于覆盖旧文件）		
+					if name == name_str:
+						NAME_EXIST = 1
+			if NAME_EXIST == 1:
+				os.rename(new_path_weekly, old_path_weekly)		#仅当姓名完全匹配时，新文件改名为旧文件（相当于覆盖旧文件）		
+				flash('成员删除成功!')
+			else:
+				flash('该成员不存在，请输入正确的姓名!')
+			return redirect(url_for('wb_del_member'))
 				
-			return redirect(url_for('wb_thisweek'))	 
-
-		return render_template("wb-del-member.html", title=u'删除成员', form=form)
+		return render_template("wb-del-member.html", title=u'删除成员', form=form, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))	
-
 		
-@app.route("/wb-list/")
-@login_required
-def wb_list():
-
-	#Get number of weekly whiteboards
-	num_wb = (sysadm_badges_number())[3]
-
-	list = []
-	#取得weekly目录下的所有文件（列表）
-	files = os.listdir(WEEKLY_PATH)
-	#列表按文件名排序
-	files.sort(reverse = True)  
-	for weeklyfile in files:
-		list.append(weeklyfile)
-	return  render_template("wb-list.html", title=u'白板列表', num_wb=num_wb, list=list)		
 
 @app.route('/wb-review/<filename>/')
 @app.route("/wb-review/") 
@@ -337,17 +403,11 @@ def wb_review(filename):
 		set_cn_encoding()	
 		
 		fn = filename
+
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
-		
-		
-		list = []
-		#取得weekly目录下的所有文件（列表）
-		files = os.listdir(WEEKLY_PATH)
-		#列表按文件名排序,显示在页面左栏
-		files.sort(reverse = True)  
-		for weeklyfile in files:
-			list.append(weeklyfile)		
+		#Get the list of weekly files
+		list = get_weekly_list()		
 		
 		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
 		start = filename.split("_")[1]
@@ -375,6 +435,54 @@ def wb_review(filename):
 	except Exception as e:
 		return(str(e))
 
+		
+		
+#To create a excel file(filename.xlsx)
+# def wb_create_xlsx():
+	# try:
+		# set_cn_encoding()	
+		
+		# filename="weekly_2017-06-10"
+		# fn = filename
+		
+		# #根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
+		# #start = filename.split("_")[1]
+		# start = "2017-06-10"
+		# start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
+		# start = "2017-06-10"
+		
+		# weekdays = []
+		# for i in range(7):     #计算该周的所有日期
+			# tmp_weekday = start_day + datetime.timedelta(days = i)
+			# tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
+			# weekdays.append(tmp_weekday)
+		
+		# #自定义tblib的excel hearders
+		# j = 0
+		# my_headers = range(15)
+		# for i in range(15):
+			# if i == 0:
+				# my_headers[i] = 'NAME'
+				# continue
+			# if i % 2 == 0:
+				# my_headers[i] = '-'
+			# else:
+				# my_headers[i] = weekdays[j]
+				# j = j + 1
+		
+		# data=tablib.Dataset()
+		# data.headers = my_headers
+		
+		# weekly_file_path = WEEKLY_PATH + fn
+		# excel_file_path = WEEKLY_EXCEL_PATH + "weekly_" + start + ".xlsx"
+		# with open(weekly_file_path,"r") as f,open(excel_file_path, 'wb') as fout:
+			# for line in f:
+				# data.append(line.split())
+			# fout.write(data.xlsx)
+				
+	# except Exception as e:
+		# return(str(e))
+		
 	
 #get the location from user's ip
 def get_ip_info(ip):
@@ -395,10 +503,7 @@ def get_ip_info(ip):
 	return ip_info
 		
 	
-#solve the chinese code problem
-def	set_cn_encoding():
-	reload(sys)
-	sys.setdefaultencoding('utf-8')
+
 
 
 #create dir tree-view
@@ -525,11 +630,14 @@ def write_log_info(info_type):
 	# except Exception as e:
 		# return redirect(url_for('homepage'))
 
+@app.route("/test/")
+def testpage():
+	return  render_template("test.html", title=u'测试页面')
 		
 	
 @app.route("/")
 def homepage():
-	return  render_template("main.html", title=u'首页')
+	return  render_template("main.html", title=u'留言区')
 	
 
 	
@@ -1097,13 +1205,13 @@ def login_page():
 				session['auth_type_db'] = auth_type_db
 				
 				write_log_info('login')  #do the logging
-				flash(u"您已成功登陆!")
+				#flash(u"您已成功登陆!")
 				
 				#redirect to the exact url I want to access
 				# return redirect(session["want_url"])
 				
 				#return redirect(url_for('homepage'))
-				return redirect(url_for('wb_thisweek')) #根据实际需要，登陆后直接跳转到白板页
+				return redirect(url_for('wb_show', week="thisweek")) #根据实际需要，登陆后直接跳转到白板页
 
 				
 			else:
@@ -1161,7 +1269,7 @@ def register_page():
 				write_log_info('register') #do the logging
 				
 				#return redirect(url_for('homepage'))
-				return redirect(url_for('wb_thisweek')) #根据实际需要，注册后直接跳转到白板页
+				return redirect(url_for('wb_show', week='thisweek')) #根据实际需要，注册后直接跳转到白板页
 		
 		return render_template("register.html", title=u'注册', form=form)
 		

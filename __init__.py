@@ -404,33 +404,53 @@ def wb_review(filename):
 		
 		fn = filename
 
-		#Get number of weekly whiteboards
-		num_wb = (sysadm_badges_number())[3]
-		#Get the list of weekly files
-		list = get_weekly_list()		
+		c, conn = connection()
+		c.execute("select * from login_user where username = (%s)", [session['username']])
+	
+		#get the auth_type of first record
+		auth_type_db = c.fetchone()[5]
 		
-		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
-		start = filename.split("_")[1]
-		start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
-		weekdays = []
-		for i in range(7):     #计算该周的所有日期
-			tmp_weekday = start_day + datetime.timedelta(days = i)
-			tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
-			weekdays.append(tmp_weekday)
-				
-		#fillin the weekly form based on the record automatically
-		path = WEEKLY_PATH + fn			
-		with open(path, 'r') as file:
-			name_lines = file.readlines()
+		#check auth_type of the logged in user, if not matches, redirect to role_error_page
+		if 'h3c' == auth_type_db or 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
+			#Get number of weekly whiteboards
+			num_wb = (sysadm_badges_number())[3]
+			#Get the list of weekly files
+			list = get_weekly_list()		
+			
+			#如果传入的文件名为空(即第一次进入页面)，即计算本周日期，页面显示本周记录
+			if fn == "thisweek":
+				today = datetime.date.today()
+				start = today + datetime.timedelta(-2 - today.weekday())
+				fn = "weekly_" + str(start)
+				weekdays = []
+				for i in range(7):     #计算该周的所有日期
+					tmp_weekday = start + datetime.timedelta(days = i)
+					weekdays.append(tmp_weekday)
+			#否则，根据传入的文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21），显示该周记录
+			else:		
+				start = filename.split("_")[1]
+				start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
+				weekdays = []
+				for i in range(7):     #计算该周的所有日期
+					tmp_weekday = start_day + datetime.timedelta(days = i)
+					tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
+					weekdays.append(tmp_weekday)
+					
+			#fillin the weekly form based on the record automatically
+			path = WEEKLY_PATH + fn			
+			with open(path, 'r') as file:
+				name_lines = file.readlines()
 
-		filedata = []
-		num = len(name_lines)
+			filedata = []
+			num = len(name_lines)
 
-		for x in range(num):
-			filedata.append(name_lines[x].split(" "))		
-		
-		return render_template("wb-review.html", title=u'白板回顾', num=num, num_wb=num_wb, \
-		       list=list, fn=fn, weekdays=weekdays, filedata=filedata)
+			for x in range(num):
+				filedata.append(name_lines[x].split(" "))		
+			
+			return render_template("wb-review.html", title=u'白板回顾', num=num, num_wb=num_wb, \
+				   list=list, fn=fn, weekdays=weekdays, filedata=filedata)
+		else:
+			return redirect(url_for('role_error_page'))
 		
 	except Exception as e:
 		return(str(e))
@@ -628,12 +648,7 @@ def write_log_info(info_type):
 	# try:
 		# return send_from_directory(os.path.join(app.instance_path, ''), filename)
 	# except Exception as e:
-		# return redirect(url_for('homepage'))
-
-@app.route("/test/")
-def testpage():
-	return  render_template("test.html", title=u'测试页面')
-		
+		# return redirect(url_for('homepage'))		
 	
 @app.route("/")
 def homepage():
@@ -667,7 +682,7 @@ def user_auth_edit(username):
 			conn.close()
 			gc.collect()
 			flash(u'用户权限更新成功！')
-			return  redirect(url_for('users_list'))
+			return  redirect(url_for('user_list'))
 		else:
 			c, conn = connection()
 			c.execute("select * from login_user where username = (%s)", [username])
@@ -704,16 +719,16 @@ def user_delete(username):
 		conn.close()
 		gc.collect()
 		flash('用户删除成功!')
-		return  redirect(url_for('users_list'))
+		return  redirect(url_for('user_list'))
 	
 	except Exception as e:
 		return str(e)		
 
 	
 		
-@app.route("/users-list/")
+@app.route("/user-list/")
 @login_required
-def users_list():
+def user_list():
 	try:
 		c, conn = connection()
 
@@ -726,7 +741,7 @@ def users_list():
 		num_users = (sysadm_badges_number())[1]
 		num_docs = (sysadm_badges_number())[2]
 			
-		return render_template("users-list.html", title=u'用户列表', users_db=users_db, num_logs=num_logs, num_users=num_users, num_docs=num_docs)	
+		return render_template("user-list.html", title=u'用户列表', users_db=users_db, num_logs=num_logs, num_users=num_users, num_docs=num_docs)	
 	except Exception as e:
 		return str(e)
 
@@ -742,15 +757,15 @@ def log_delete(filename):
 		os.remove(filename)
 
 		flash(u'日志删除成功!')
-		return  redirect(url_for('logs_list'))
+		return  redirect(url_for('log_list'))
 	
 	except Exception as e:
 		return str(e)		
 	
 	
-@app.route("/logs-list/")
+@app.route("/log-list/")
 @login_required
-def logs_list():
+def log_list():
 
 	#Get number of logs
 	num_logs = (sysadm_badges_number())[0]
@@ -762,7 +777,7 @@ def logs_list():
 	files.sort(reverse = True)  
 	for logfile in files:
 		list.append(logfile)
-	return  render_template("logs-list.html", title=u'日志列表', num_logs=num_logs, list=list)	
+	return  render_template("log-list.html", title=u'日志列表', num_logs=num_logs, list=list)	
 		
 		
 @app.route('/log-show/<filename>/')
@@ -914,7 +929,7 @@ def doc_type_edit(filename):
 			new_path_file = DOCS_PATH + new_doc_type + '/' + filename
 			if old_path_file == new_path_file:
 				flash(u'文件已存在，操作无效!')
-				return  redirect(url_for('docs_list'))
+				return  redirect(url_for('doc_list'))
 			else:
 				#copy the old_path_file to new_path_file of new type
 				shutil.copy(old_path_file, new_path_file) 
@@ -922,7 +937,7 @@ def doc_type_edit(filename):
 				os.remove(old_path_file)
 		
 				flash(u'文档类型更新成功!')
-				return  redirect(url_for('docs_list'))
+				return  redirect(url_for('doc_list'))
 		else:
 			
 			#find the old_doc_type
@@ -968,7 +983,7 @@ def doc_name_edit(filename):
 			os.rename(old_path_file, new_path_file)
 		
 			flash(u'文档重命名成功!')
-			return  redirect(url_for('docs_list'))
+			return  redirect(url_for('doc_list'))
 		else:
 						
 			#Get number of logs/users/docs and display them with "bootstrap badge"
@@ -1002,15 +1017,15 @@ def doc_delete(filename):
 		os.remove(filename)
 
 		flash(u'文档删除成功!')
-		return  redirect(url_for('docs_list'))
+		return  redirect(url_for('doc_list'))
 	
 	except Exception as e:
 		return str(e)	
 
 	
-@app.route("/docs-list/")
+@app.route("/doc-list/")
 @login_required
-def docs_list():
+def doc_list():
 	try:
 		set_cn_encoding()
 		fnlist = []
@@ -1027,7 +1042,7 @@ def docs_list():
 		num_users = (sysadm_badges_number())[1]
 		num_docs = (sysadm_badges_number())[2]
 			
-		return render_template("docs-list.html", title=u'文档列表', num_file=num_file, fnlist=fnlist, dirlist=dirlist, 
+		return render_template("doc-list.html", title=u'文档列表', num_file=num_file, fnlist=fnlist, dirlist=dirlist, 
 		num_logs=num_logs, num_users=num_users, num_docs=num_docs)	
 	except Exception as e:
 		return str(e)

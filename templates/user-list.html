@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+	
+{% block page_panel %}
+	 
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-3">
+   </div><!-- left panel end -->
+   
+   <!-- middle panel: table content -->
+   <div class="col-sm-10 col-md-6">
+		<div class="leaderboard" align="left">
+			<caption><h1>用户列表</h1></caption>
+			<hr>
+			<I><font size="3" face="arial" color="blue">权限说明：</font></I><br>
+			<I><b>superadm:</b> 唯一拥有“系统管理”权限的超级管理员用户</I><br>
+			<I><b>adm:</b> 可以查看所有文档库内容</I><br>
+			<I><b>ser:</b> 可以查看服务器岗文档库</I><br>
+			<I><b>net:</b> 可以查看网络岗文档库</I><br>
+			<I><b>inv:</b> 可以查看资产岗文档库</I><br>
+			<I><b>None:</b> 普通登陆用户，不能查看、上传任何文档</I>
+			<hr>
+		</div>	
+		<div style="height:60%; overflow-y:auto">
+			<table class="table table-hover">
+			   <thead>
+				  <tr>
+						<th>用户名(username)</th>
+						<th>权限类型(auth_type)</th>
+						<th>用户邮箱(email)</th>
+						<th>注册日期(regdate)</th>
+				  </tr>
+			   </thead> 
+			   <tbody align="left">
+					{% for user in users_db %}
+					  <tr class="active">    
+						 <td><a href="{{ url_for('user_delete', username=user.0) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{ user.0 }}</font></td> 	 
+						
+						 <td><a href="{{ url_for('user_auth_edit', username=user.0) }}"><button type="button" class="btn btn-info" ><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+						 </button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green"> {{ user.1 }}</font></td>
+						 
+						 <td>{{ user.2 }}</td>
+						 <td>{{ user.3 }}</td>
+					  </tr>
+
+					{% endfor %}
+			   </tbody>
+			</table> 
+		</div>
+	</div><!-- middle panel end -->	
+	
+   <!-- right panel: table content -->
+   <div class="col-sm-1 col-md-3">
+	</div><!-- right panel end -->
+</div> 
+ 
+{% endblock %}

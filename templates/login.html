@@ -1,12 +1,6 @@
 {% extends "layout.html" %}
 
-{% block left_panel %}
-
-	{% include 'main-left-panel.html' %}
-	
-{% endblock %} <!--block left_panel-->
-
-{% block right_panel %}
+{% block page_panel %}
 
 <div class="leaderboard">
 	<h1>请登陆:</h1>
@@ -14,9 +8,10 @@
 	<form action="" class="form-inline" method="post">
 		<input type="text" class="form-control" placeholder="Username" name="username" value="{{request.form.username}}">
 		<input type="password" class="form-control" placeholder="Password" name="password" value="{{request.form.password}}">
+		<br><br>
 		<input class="btn btn-default" type="submit" value="登陆">
 	</form>
 	<p>{{error}}</p>
 </div>
 
-{% endblock %} <!--block right_panel-->
+{% endblock %} <!--block page_panel-->

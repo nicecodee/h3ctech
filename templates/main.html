@@ -1,23 +1,40 @@
 {% extends "layout.html" %}
 
-{% block left_panel %}
 
-	{% include 'main-left-panel.html' %}
+{% block page_panel %}
 
-{% endblock %} <!--block left_panel-->
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-2">
+   </div><!-- left panel end -->
+   
+   <!-- middle panel: table content -->
+   <div class="col-sm-10 col-md-8">
+		<div class="leaderboard">
+			<h1>Free.to.Talk.</h1>
+			
+			<h6>（Note: 网站现已改版，支持手机浏览器访问）</h6>
+			
+			<br><br><br>
+			<p>欢迎在以下评论区留言：
+			<h6>（注：本站使用Disqus评论系统，您有可能看不到评论区（需要翻墙））</h6>
+			</p>
+			<br><br><br>
+			<p><a class="btn btn-success btn-large">OUTSIDE the Great Wall, u'll see much MORE...</a></p>
+		</div>
+		  
+		<!-- disqus_content -->	
+		<br><br><br>
+		<div id="disqus_thread"></div>
+		
+	</div><!-- middle panel end -->	
+	
+   <!-- right panel: table content -->
+   <div class="col-sm-1 col-md-2">
+	</div><!-- right panel end -->
+</div>
 
-{% block right_panel %}
-  <div class="leaderboard">
-	<h1>Free.to.Talk.</h1>
-	<p>欢迎在以下评论区留言：
-	<h6>（注：本站使用Disqus评论系统，您有可能看不到评论区（需要翻墙））</h6>
-	</p>
-	<br><br><br>
-	<p><a class="btn btn-success btn-large">OUTSIDE the Great Wall, u'll see much MORE...</a></p>
-  </div>
-  
 
-<div id="disqus_thread"></div>
 <script>
 	/**
 	*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.

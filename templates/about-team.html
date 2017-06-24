@@ -1,20 +1,6 @@
 {% extends "layout.html" %}
 
-{% block left_panel %}
-  <div class="well sidebar-nav">
-	<ul class="nav nav-list">
-	  <li class="nav-header">团队成员</li>
-	  <li><a href="#">紫光华山</a></li>
-	  <li><a href="#">亚康</a></li>
-	  <li class="nav-header">团队精彩</li>
-	  <li><a href="#">大事记</a></li>
-	  <li class="active"><a href="#">成员风彩</a></li>
-	  <li><a href="#">活动照片</a></li>
-   </ul>
-  </div><!--/.well -->
-{% endblock %} <!--block left_panel-->
-
-{% block right_panel %}
+{% block page_panel %}
   
 	<div class="row">
 	   <div class="col-sm-6 col-md-3">
@@ -91,26 +77,4 @@
 	   </div>
 	</div>
   
-  <hr>
-  <div class="row-fluid">
-	<div class="span4">
-	  <h2>学习</h2>
-	  <p>自2011年XXX启动了IDC运维服务外包项目,通过五年的运行，XXX IDC机房逐步由驻场模式切换到全外包模式。</p>
-	  <p><a class="btn btn-success btn-large" href="#">不断学习</a></p>
-	</div><!--/span-->
-	<div class="span4">
-	  <h2>创新</h2>
-	  <p>自2011年XXX启动了IDC运维服务外包项目,通过五年的运行，XXX IDC机房逐步由驻场模式切换到全外包模式。</p>
-	  <p><a class="btn btn-success btn-large" href="#">锐意创新</a></p>
-	</div><!--/span-->
-	<div class="span4">
-	  <h2>成长</h2>
-	  <p>自2011年XXX启动了IDC运维服务外包项目,通过五年的运行，XXX IDC机房逐步由驻场模式切换到全外包模式。</p>
-	  <p><a class="btn btn-success btn-large" href="#">共同成长</a></p>
-	</div><!--/span-->
-  </div><!--/row-->
-  <hr>
-  <footer>
-	<p>&copy; JiaXuan 2016</p>
-  </footer>
-{% endblock %}<!--block right_panel-->
+{% endblock %}<!--block page_panel-->

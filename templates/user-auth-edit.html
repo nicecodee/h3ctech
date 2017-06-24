@@ -1,50 +1,61 @@
 {% extends "layout.html" %}
-
-{% block left_panel %}
-
-	{% include 'sys-admin-left-panel.html' %}
 	
-{% endblock %}
+{% block page_panel %}
 	
-{% block right_panel %}
-	
-<div class="leaderboard">
-	<caption><h1>修改权限</h1></caption>
-	<br>
-	<h4>"{{username}}" 当前权限:  <font size="4" face="arial" color="blue"> {{auth_type_db}} </font></h4>   
-	<hr>
-	<h3>请选择:</h3>
-	<br>
-	<form class="form-horizontal" method ="POST" action="{{ url_for('user_auth_edit', username=username) }}">
-		<div>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="None" checked> 无访问权限(None/Null)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="ser"> 服务器岗(ser)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="net"> 网络岗(net)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="inv"> 资产岗(inv)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="adm"> 普通管理员(adm)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="user_auth" value="superadm"><font face="arial" color="red"> 超级管理员(superadm)</font></td>
-		   </label>
-		</div>
-		
-		<hr>
-	    <div>
-		 <button type="submit" class="btn btn-success">提交</button>
-		 <a href="{{ url_for('users_list') }}" class="btn btn-default" role="button">取消</a>
-	    </div>
-	</form>
-	<p>{{error}}</p>
-</div>
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-4">
+   </div><!-- left panel end -->
    
-  
+   <!-- middle panel: table content -->
+   <div class="col-sm-10 col-md-4">
+		<div class="leaderboard">
+			<caption><h1>修改权限</h1></caption>
+			<br>
+			<h4>"{{username}}" 当前权限:  <font size="4" face="arial" color="blue"> {{auth_type_db}} </font></h4>   
+			<hr>
+			<h3>请选择:</h3>
+			<br>
+			<form class="form-horizontal" method ="POST" action="{{ url_for('user_auth_edit', username=username) }}">
+				<div>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="None" checked> 无访问权限(None/Null)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="ser"> 服务器岗(ser)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="net"> 网络岗(net)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="inv"> 资产岗(inv)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="h3c"> h3c白板用户(h3c)
+				   </label>
+				   	<label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="h3cadm"> h3c白板管理员(h3cadm)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="user_auth" value="superadm"><font face="arial" color="red"> 超级管理员(superadm)</font></td>
+				   </label>
+				</div>
+				
+				<hr>
+				<div>
+				 <button type="submit" class="btn btn-success">提交</button>
+				 <a href="{{ url_for('user_list') }}" class="btn btn-default" role="button">取消</a>
+				</div>
+			</form>
+			<p>{{error}}</p>
+		</div>
+	</div><!-- middle panel end -->	
+	
+   <!-- right panel -->
+   <div class="col-sm-1 col-md-4">
+		<div class="leaderboard">
+		</div>
+	</div><!-- right panel end -->
+</div>	
+	 
 {% endblock %}

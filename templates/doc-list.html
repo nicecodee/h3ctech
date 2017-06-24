@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block page_panel %}
+	
+	 
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-3">
+   </div><!-- left panel end -->
+   
+   <!-- middle panel: table content -->
+   <div class="col-sm-10 col-md-6">
+		<div class="leaderboard">
+			<caption><h1>文档列表</h1></caption>
+			
+			<div style="height:65%; overflow-y:auto">
+				<table class="table table-hover">
+				   <thead>
+					  <tr>
+							<th>序号</th>
+							<th>文件名 (点击文件名，可查看文件)</th>
+							<th>文档类型</th>
+							<th>上传者</th>
+							<th>上传时间</th>
+							<th>作者</th>
+							<th>备注</th>
+					  </tr>
+				   </thead> 
+				   <tbody align="left">
+						{% for i in range(num_file) %}
+							{% if 'server' == dirlist[i] %}  <!-- 不同文档类型，显示不同的背景色 -->
+							<tr class="active">    
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+							
+								<td>
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+										<a href="{{ url_for('doc_server_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+								 </td>
+							{% elif 'network' == dirlist[i] %}
+							<tr class="success">     
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+							
+								<td>
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+										<a href="{{ url_for('doc_network_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+								 </td>
+							{% elif 'inventory' == dirlist[i] %}
+							<tr class="warning">    
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+							
+								<td>
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+										<a href="{{ url_for('doc_inventory_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
+								 </td>
+							{% endif %}
+							
+							<td><a href="{{ url_for('doc_type_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+							 </button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green"> {{dirlist[i]}}</font></td>
+						  
+						  
+							<!-- <td>{{dirlist[i]}}</td> -->
+							<td>None</td>
+							<td>None</td>
+							<td>None</td>
+							<td>None</td>
+						</tr>
+						{% endfor %}
+				   </tbody>
+				</table> 
+			</div>	
+		</div>
+	</div><!-- middle panel end -->	
+	
+   <!-- right panel: table content -->
+   <div class="col-sm-1 col-md-3">
+	</div><!-- right panel end -->
+</div> 
+	
+	
+	
+	
+
+
+{% endblock %}

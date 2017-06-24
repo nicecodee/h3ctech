@@ -1,42 +1,48 @@
 {% extends "layout.html" %}
 
-{% block left_panel %}
-
-	{% include 'docs-dashboard-left-panel.html' %}
+{% block page_panel %}
 	
-{% endblock %} <!--block left_panel-->
-
-{% block right_panel %}
-	
-<div class="leaderboard">
-
-    <h1>上传文档</h1>
-	<I>(文件大小限制：<10MB; &nbsp;&nbsp;&nbsp;&nbsp;文件扩展名限制：.pdf)</I>
-	<hr>
-	<font size="4" face="arial" color="blue">请选择“文档类型”： </font>
-	<br>
-	<br>
-	
-    <form action="" method=post enctype=multipart/form-data>
-		<div>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="doc_type" value="server"> 服务器(server)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="doc_type" value="network"> 网络(network)
-		   </label>
-		   <label class="checkbox-inline">
-			  <input type="radio" name="doc_type" value="inventory"> 资产(inventory)
-		   </label>
-		</div>
-		<hr>
-        <p><input type=file name=file>
-		<!-- <input type=submit value=Upload> -->
-		 <button type="submit" class="btn btn-success"value="Submit">上传</button>
-    </form>
-	
-	
-</div>
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-4">
+   </div><!-- left panel end -->
    
+   <!-- middle panel -->
+   <div class="col-sm-10 col-md-4">
+		<div class="leaderboard">
+
+			<h1>上传文档</h1>
+			<I>(文件大小：<10MB; &nbsp;&nbsp;&nbsp;&nbsp;扩展名：.pdf)</I>
+			<hr>
+			<font size="4" face="arial" color="blue">请选择“文档类型”： </font>
+			<br>
+			<br>
+			
+			<form action="" method=post enctype=multipart/form-data>
+				<div>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="doc_type" value="server"> 服务器(server)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="doc_type" value="network"> 网络(network)
+				   </label>
+				   <label class="checkbox-inline">
+					  <input type="radio" name="doc_type" value="inventory"> 资产(inventory)
+				   </label>
+				</div>
+				<hr>
+				<p><input type=file name=file>
+				<!-- <input type=submit value=Upload> -->
+				 <button type="submit" class="btn btn-success"value="Submit">上传</button>
+			</form>	
+		</div>
+	</div><!-- middle panel end -->	
+	
+	<!-- right panel -->
+	<div class="col-sm-1 col-md-4">
+		<div class="leaderboard">
+		</div>
+	</div><!-- right panel end -->
+</div>
   
 {% endblock %}
