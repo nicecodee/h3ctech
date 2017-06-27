@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+
+{% block page_panel %}
+
+<div class="row">
+	<!-- left panel: collapse view -->
+   <div class="col-sm-1 col-md-2">
+   </div><!-- left panel end -->
+   
+   <!-- middle panel: table content -->
+   <div class="col-sm-10 col-md-8">
+		<div class="leaderboard">
+			<h1>公告栏</h1>
+			
+			<br>
+			<p class="bg-info">No news is good news...</p>
+			
+			<br><br><br>
+			<!-- <p class="bg-success">他山之石，可以攻玉。欢迎在评论区留言： -->
+			<!-- <h6>（注：本站使用Disqus评论系统，如果看不到评论区，请您换一种打开方式...）</h6> -->
+			</p>
+			<br><br>
+			<p><a class="btn btn-info btn-large">网站支持手机浏览器访问</a></p>
+		</div>
+		  
+		<!-- disqus_content -->	
+		<br><br><br>
+		<!-- <div id="disqus_thread"></div> -->
+		
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxOS81Nzg2">
+			<script type="text/javascript">
+		   (function(d, s) {
+			   var j, e = d.getElementsByTagName(s)[0];
+
+			   if (typeof LivereTower === 'function') { return; }
+
+			   j = d.createElement(s);
+			   j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+			   j.async = true;
+
+			   e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+			</script>
+		</div>
+		<!-- City版安装代码已完成 -->
+
+		
+	</div><!-- middle panel end -->	
+	
+   <!-- right panel: table content -->
+   <div class="col-sm-1 col-md-2">
+	</div><!-- right panel end -->
+</div>
+
+
+
+{% endblock %}<!--block right_panel-->

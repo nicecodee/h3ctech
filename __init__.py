@@ -601,7 +601,7 @@ def write_log_info(info_type):
 		c, conn = connection()
 		
 		timestr_filename = time.strftime("%Y%m%d", time.localtime())
-		path = LOGS_PATH + 'user_accessed_' +  timestr_filename + '.log'
+		path = LOGS_PATH + 'access_' +  timestr_filename
 		timestr_logon = time.strftime("%Y/%m/%d-%H:%M:%S-%p", time.localtime())
 
 		with open(path, 'ab') as file:
@@ -657,6 +657,9 @@ def homepage():
 	return  render_template("main.html", title=u'留言区')
 	
 
+@app.route("/test/")
+def test():
+	return  render_template("test.html", title=u'测试页面')
 	
 @app.route("/about-team/")
 def about_team():
