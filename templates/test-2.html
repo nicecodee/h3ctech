@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+
+{% block head %}
+
+ <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+{% endblock %}
+
+{% block page_panel %}
+
+
+<div class="row">
+	<!-- sidebar -->
+	<div class="col-sm-6 col-md-3">
+		<div class="mini-submenu">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</div>
+		<div class="list-group">
+			<span href="#" class="list-group-item active">
+				Submenu
+				<span class="pull-right" id="slide-submenu">
+					<i class="fa fa-times"></i>
+				</span>
+			</span>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-comment-o"></i> Lorem ipsum
+			</a>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-search"></i> Lorem ipsum
+			</a>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-user"></i> Lorem ipsum
+			</a>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-folder-open-o"></i> Lorem ipsum <span class="badge">14</span>
+			</a>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-bar-chart-o"></i> Lorem ipsumr <span class="badge">14</span>
+			</a>
+			<a href="#" class="list-group-item">
+				<i class="fa fa-envelope"></i> Lorem ipsum
+			</a>
+		</div>        
+	</div><!-- sidebar -->
+	<!-- page content -->
+	<div class="col-sm-6 col-md-12">
+		<div class="span12" id="page-content-wrapper">
+				<div class="leaderboard" style="width:100%;">
+					
+					<h1>上周白板.更新</h1>
+					
+					<div style="overflow-y:auto">
+					
+					<h3>当前记录</h3>
+						<table class="table table-hover" border="1">
+						   <!-- <caption><h1>{{fn}}</h1></caption> -->
+						   <thead>
+							  <tr>
+							  <th rowspan="2">成员姓名</th>		 
+									<th colspan="2">2017-01-01</th>
+									<th colspan="2">2017-01-02</th>
+									<th colspan="2">2017-01-03</th>
+									<th colspan="2">2017-01-04</th>
+									<th colspan="2">2017-01-05</th>
+									<th colspan="2">2017-01-06</th>
+									<th colspan="2">2017-01-07</th>
+							  </tr>
+							  <tr>
+								<th colspan="2">星期六</th>
+								<th colspan="2">星期日</th>
+								<th colspan="2">星期一</th>
+								<th colspan="2">星期二</th>
+								<th colspan="2">星期三</th>
+								<th colspan="2">星期四</th>
+								<th colspan="2">星期五</th>
+							  </tr>
+						   </thead>
+						   <tbody>
+								<tr class="active">
+										<td>张三丰</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+										<td>较长测试数据</td>
+								</tr>
+						   </tbody>
+						</table>
+					</div>
+				</div>
+		  </div>
+	</div><!-- page content -->
+</div>
+
+	
+	
+	
+	
+	
+
+
+
+{% endblock %}<!--block right_panel-->

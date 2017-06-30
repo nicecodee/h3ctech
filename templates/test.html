@@ -1,59 +1,99 @@
 {% extends "layout.html" %}
 
+{% block head %}
+
+<!-- <head><link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"></head> -->
+{% endblock %}
 
 {% block page_panel %}
 
-<div class="row">
-	<!-- left panel: collapse view -->
-   <div class="col-sm-1 col-md-2">
-   </div><!-- left panel end -->
-   
-   <!-- middle panel: table content -->
-   <div class="col-sm-10 col-md-8">
-		<div class="leaderboard">
-			<h1>公告栏</h1>
-			
-			<br>
-			<p class="bg-info">No news is good news...</p>
-			
-			<br><br><br>
-			<!-- <p class="bg-success">他山之石，可以攻玉。欢迎在评论区留言： -->
-			<!-- <h6>（注：本站使用Disqus评论系统，如果看不到评论区，请您换一种打开方式...）</h6> -->
-			</p>
-			<br><br>
-			<p><a class="btn btn-info btn-large">网站支持手机浏览器访问</a></p>
-		</div>
-		  
-		<!-- disqus_content -->	
-		<br><br><br>
-		<!-- <div id="disqus_thread"></div> -->
-		
-		<!-- 来必力City版安装代码 -->
-		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxOS81Nzg2">
-			<script type="text/javascript">
-		   (function(d, s) {
-			   var j, e = d.getElementsByTagName(s)[0];
 
-			   if (typeof LivereTower === 'function') { return; }
+    <div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav" align="left">
+                <li><a href="#">Account</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </div>
 
-			   j = d.createElement(s);
-			   j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-			   j.async = true;
+        <!-- page content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="btn btn-default" id="menu-toggle" style="margin-top:0px;float:left;"><span class="glyphicon glyphicon-th-list"></span></a>		
+								
 
-			   e.parentNode.insertBefore(j, e);
-		   })(document, 'script');
-			</script>
-		</div>
-		<!-- City版安装代码已完成 -->
+						<div class="leaderboard" style="width:100%;">
+							
+							<h1>上周白板.更新</h1>
+							
+							<div style="overflow-y:auto">
+							
+								<h3>当前记录</h3>
+								<table class="table table-hover" border="1">
+								   <!-- <caption><h1>{{fn}}</h1></caption> -->
+								   <thead>
+									  <tr>
+									  <th rowspan="2">成员姓名</th>		 
+											<th colspan="2">2017-01-01</th>
+											<th colspan="2">2017-01-02</th>
+											<th colspan="2">2017-01-03</th>
+											<th colspan="2">2017-01-04</th>
+											<th colspan="2">2017-01-05</th>
+											<th colspan="2">2017-01-06</th>
+											<th colspan="2">2017-01-07</th>
+									  </tr>
+									  <tr>
+										<th colspan="2">星期六</th>
+										<th colspan="2">星期日</th>
+										<th colspan="2">星期一</th>
+										<th colspan="2">星期二</th>
+										<th colspan="2">星期三</th>
+										<th colspan="2">星期四</th>
+										<th colspan="2">星期五</th>
+									  </tr>
+								   </thead>
+								   <tbody>
+										<tr class="active">
+												<td>张三丰</td>
+												<td>较长测试数据</td>
+												<td>特别长测试数据</td>
+												<td>非常长的测试数据</td>
+												<td>还有更长的测sdfsssssssssssssssssssss试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+												<td>较长测试数据</td>
+										</tr>
+								   </tbody>
+								</table>
+							</div>
+						</div>		
+								
+								
+								
+								
+								
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Menu toggle script -->
+    <script>
+        $("#menu-toggle").click( function (e){
+            e.preventDefault();
+            $("#wrapper").toggleClass("menuDisplayed");
+        });
+    </script>
 
-		
-	</div><!-- middle panel end -->	
-	
-   <!-- right panel: table content -->
-   <div class="col-sm-1 col-md-2">
-	</div><!-- right panel end -->
-</div>
-
-
-
-{% endblock %}<!--block right_panel-->
+{% endblock %}<!--block page_panel-->

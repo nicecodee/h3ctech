@@ -23,6 +23,9 @@
 	<script src="/static/js/jquery-2.1.1.min.js"></script>
 	<script script type="text/javascript" src="/static/js/clear_form.js"></script>
 	
+	<!-- Custom styles for sticky footer -->
+    <link href="/static/css/sticky-footer.css" rel="stylesheet">
+	
 <style>
 	h1 {
 	color : #92B901;
@@ -68,11 +71,11 @@
 					<li class="dropdown">
 						<a href="{{ url_for('wb_show',week='thisweek') }}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="50" data-close-others="false"><span class="glyphicon glyphicon-calendar"></span> 白板 <span class="caret"></span></a>
 						<ul class="dropdown-menu">												
-							<li><a href="{{ url_for('wb_show', week='thisweek') }}"><span class="glyphicon glyphicon-hand-right"></span> 本周白板</a></li> 
-							<li role="separator" class="divider"></li>
+							<li><a href="{{ url_for('wb_show', week='thisweek') }}"><span class="glyphicon glyphicon-hand-right"></span> 本周白板</a></li> 			
 							<li><a href="{{ url_for('wb_review', filename='thisweek') }}"><span class="glyphicon glyphicon-cloud"></span> 历史记录</a></li>
 							{% if session.logged_in %}	
 								{% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %}			
+									<li role="separator" class="divider"></li>
 									<li><a href="{{ url_for('wb_show', week='lastweek') }}"><span class="glyphicon glyphicon-hand-left"></span> 上周白板</a></li>
 									<li role="separator" class="divider"></li>
 									<li><a href="/wb-add-member/"><span class="glyphicon glyphicon-ok-circle"></span> 增加成员</a></li>
@@ -156,10 +159,11 @@
 			  </div>
 		{% endblock %}<!--block content end-->
 		
-		<!--add my footer-->
-		<br><br><br><br>
-		<footer>
-			<p>&copy; JiaXuan 2016-2017</p>
+		<!--add my footer--> 
+		<footer class="footer">
+		  <div class="container">
+			<p class="text-muted">&copy; JiaXuan 2016-2017</p>
+		  </div>
 		</footer>
 	</div>
 
