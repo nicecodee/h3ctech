@@ -1,75 +1,78 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		{% if title %}
+		<title>{{ title }} - h3cTech</title>
+		{% else %}
+		<title>h3cTech</title>
+		{% endif %}
+
+		<!-- Latest compiled and minified CSS -->
+		<link href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Optional theme -->
+		<link href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" rel="stylesheet">
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="/static/bootstrap-3.3.7-dist/js/jquery-1.12.4/jquery.min.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+		
+		<!-- js Script for clearing form data -->	
+		<script src="/static/js/jquery-2.1.1.min.js"></script>
+		
+		<!-- Custom styles for index cover -->
+		<link href="/static/css/cover.css" rel="stylesheet">
+		
+		
+		
+	</head>
+
+	<body>
 
 
-{% block page_panel %}
+	   <div class="site-wrapper">  
+		  <div class="site-wrapper-inner">
 
-<div class="row">
-	<!-- left panel: collapse view -->
-   <div class="col-sm-1 col-md-2">
-   </div><!-- left panel end -->
-   
-   <!-- middle panel: table content -->
-   <div class="col-sm-10 col-md-8">
-		<div class="leaderboard">
-			<h1>公告栏</h1>
-			
-			<br>
-			<p class="bg-info">白板支持内网/外网访问（推荐外网）</p>
-			<p class="bg-info">内网可用IE代理：http://h3cead01.h3c.com/selfservice/httpchpproxy.pac
-			</p>
-			
-			<br><br>
-			<br><br>
-			<p><a class="btn btn-info btn-large">网站支持手机浏览器访问</a></p>
+			<div class="cover-container">
+			  <div class="masthead clearfix">
+				<div class="inner">
+				  <!-- <h3 class="masthead-brand">Cover</h3> -->
+				  <!-- <nav> -->
+					<!-- <ul class="nav masthead-nav"> -->
+					  <!-- <li class="active"><a href="#">Home</a></li> -->
+					  <!-- <li><a href="#">Features</a></li> -->
+					  <!-- <li><a href="#">Contact</a></li> -->
+					<!-- </ul> -->
+				  <!-- </nav> -->
+				</div>
+			  </div>
+			  		  
+			  <img src="/static/images/bird.jpg" class="img-circle" width="220" height="220" class="img-responsive">
+			  <br><br><br>
+			  <div class="inner cover" style="width: 100%">
+				<!-- <h1 class="cover-heading">欢迎访问白板</h1> -->
+				<p class="lead">白板支持外网访问（内网请使用PAC脚本设置代理） </p>
+				<p class="lead">
+				  <a href="{{ url_for('wb_show', week='thisweek') }}" class="btn btn-lg btn-info">Go!</a>
+				</p>
+				
+			  </div>
+
+			  <div class="mastfoot">
+				<div class="inner">
+				  <p>Built for <a href="#">TS team</a>, by  <a href="#">JiaXuan</a></p>
+				</div>
+			  </div>
+
+			</div>
+
+		  </div>
+
 		</div>
-		  
-		<br><br><br>
-		
-		
-		<!-- disqus_content -->	
-		
-		<!-- <div id="disqus_thread"></div> -->
-		
-		<!-- 网易云跟贴 -->	
-		<!-- <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div> -->
-		<!-- <script src="https://img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script> -->
-		<!-- <script> -->
-		<!-- var cloudTieConfig = { -->
-		  <!-- url: document.location.href,  -->
-		  <!-- sourceId: "", -->
-		  <!-- productKey: "701609aa72d44deda3d6ea0bd1abc9a8", -->
-		  <!-- target: "cloud-tie-wrapper" -->
-		<!-- }; -->
-		<!-- var yunManualLoad = true; -->
-		<!-- Tie.loader("aHR0cHM6Ly9hcGkuZ2VudGllLjE2My5jb20vcGMvbGl2ZXNjcmlwdC5odG1s", true); -->
-		<!-- </script> -->
 
-		
-	</div><!-- middle panel end -->	
-	
-   <!-- right panel: table content -->
-   <div class="col-sm-1 col-md-2">
-	</div><!-- right panel end -->
-</div>
-
-
-<!-- <script> -->
-	<!-- /** -->
-	<!-- *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS. -->
-	<!-- *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/ -->
-	<!-- /* -->
-	<!-- var disqus_config = function () { -->
-	<!-- this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable -->
-	<!-- this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable -->
-	<!-- }; -->
-	<!-- */ -->
-	<!-- (function() { // DON'T EDIT BELOW THIS LINE -->
-		<!-- var d = document, s = d.createElement('script'); -->
-		<!-- s.src = 'https://h3ctech.disqus.com/embed.js'; -->
-		<!-- s.setAttribute('data-timestamp', +new Date()); -->
-		<!-- (d.head || d.body).appendChild(s); -->
-	<!-- })(); -->
-<!-- </script> -->
-<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> -->
-
-{% endblock %}<!--block right_panel-->
+	</body>
+</html>

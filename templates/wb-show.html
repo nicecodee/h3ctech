@@ -10,7 +10,7 @@
 	    <h1>上周白板</h1><h6>(点击姓名进行更新)</h6>
 	 {% endif %}
 		<!-- <div style="position:relative; width:76%; height:67%; overflow-y:auto" id="center"> -->
-			<table class="table table-condensed" border="1">
+			<table class="table table-striped table-hover table-condensed" border="1">
 			   <!-- <caption><h1>{{fn}}</h1></caption> -->
 			   <thead>
 			      <tr>
@@ -44,7 +44,7 @@
 							{% else %}
 						        <td> {{ filedata[row][column] }} </td>
 							{% endif %}
-						{% endfor %}
+						{% endfor %} 
 					</tr>
 				{% endfor %}
 			   </tbody>

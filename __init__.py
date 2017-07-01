@@ -654,7 +654,7 @@ def write_log_info(info_type):
 	
 @app.route("/")
 def homepage():
-	return  render_template("main.html", title=u'留言区')
+	return  render_template("main.html", title=u'首页')
 	
 
 @app.route("/test/")
@@ -1197,7 +1197,7 @@ def logout():
 	session.clear()
 	flash(u"您已退出系统！")
 	gc.collect()
-	return redirect(url_for('homepage'))
+	return redirect(url_for('login_page')) 
 
 	
 @app.route("/login/", methods = ['GET','POST'])

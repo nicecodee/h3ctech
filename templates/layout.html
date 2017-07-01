@@ -87,7 +87,7 @@
             <!--Menu items-->
             <div class="collapse navbar-collapse" id="mainNavBar">
                 <ul class="nav navbar-nav">
-					<li><a href="/"><span class="glyphicon glyphicon-send"></span> 公告栏 <span class="sr-only">(current)</span></a></li>
+					<!-- <li><a href="/"><span class="glyphicon glyphicon-send"></span> 首页 <span class="sr-only">(current)</span></a></li> -->
 					<li class="dropdown">
 						<a href="{{ url_for('wb_show',week='thisweek') }}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="50" data-close-others="false"><span class="glyphicon glyphicon-calendar"></span> 白板 <span class="caret"></span></a>
 						<ul class="dropdown-menu">												
@@ -158,7 +158,7 @@
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
 				{% for message in messages %}
-					<div class="alert alert-warning alert-dismissible" role="alert">
+					<div class="alert alert-warning alert-dismissible fade in" role="alert">
 						<button type="button" class="close" data-dismiss="alert">&times;&nbsp;&nbsp;&nbsp;&nbsp;</button>
 						{{message}}
 					</div>
@@ -183,7 +183,7 @@
 		{% block footer %}
 		<footer class="footer">
 		  <div class="container">
-			<p class="text-muted">&copy; JiaXuan 2016-2017</p>
+			<p>© JiaXuan 2016-2017. All Rights Reserved</p>
 		  </div>
 		</footer>
 		{% endblock %}<!--block footer end-->

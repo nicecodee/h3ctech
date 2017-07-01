@@ -41,8 +41,8 @@
 					 </div>
 				  </div> <!--panel-collapse-->
 			   </div>
-				</div>
-        </div>
+			</div>
+        </div> <!-- Sidebar -->
 		
 		<script type="text/javascript">
 		   $(function () { $('#collapseOne').collapse('show')});
@@ -52,51 +52,55 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-4 col-md-12">
+                    <div class="col-md-12">
 						<!-- toggle button -->
                         <a href="#" class="btn btn-default" id="menu-toggle" style="margin-top:0px;float:left;"><span class="glyphicon glyphicon-th-list"></span></a>	
 						
 						<!-- white board table content -->
-						<div class="leaderboard" style="height:65%; overflow-y:auto" id="center">
-							<h1>白板.历史记录</h1>
-							<caption><h4>（{{fn}}）</h4></caption>
-							<table class="table table-striped" border="1">
-							   <!-- <caption><h1>{{fn}}</h1></caption> -->
-							   <thead>
-								  <tr>
-								  <th rowspan="2">成员姓名</th>
-								  
-								  {% for day in weekdays %}
-										<th colspan="2">{{day}}</th>
-								  {% endfor %}  
-								  
-								  </tr>
-								  <tr>
-									<th colspan="2">星期六</th>
-									<th colspan="2">星期日</th>
-									<th colspan="2">星期一</th>
-									<th colspan="2">星期二</th>
-									<th colspan="2">星期三</th>
-									<th colspan="2">星期四</th>
-									<th colspan="2">星期五</th>
-								  </tr>
-							   </thead>
-							   <tbody>
-								{% for row in range(num) %}
-									<tr class="active">
-										{% for column in range(15) %}
-										<td> {{ filedata[row][column] }} </td>
-										{% endfor %}
-									</tr>
-								{% endfor %}
-							   </tbody>
-							</table>
+						<div class="leaderboard" style="width:100%;">
+							<div style="overflow-y:auto">
+								<h1>白板.历史记录</h1>
+								<caption><h4>（{{fn}}）</h4></caption>
+								<table class="table table-striped table-hover table-condensed" border="1">
+								   <!-- <caption><h1>{{fn}}</h1></caption> -->
+								   <thead>
+									  <tr>
+									  <th rowspan="2">成员姓名</th>
+									  
+									  {% for day in weekdays %}
+											<th colspan="2">{{day}}</th>
+									  {% endfor %}  
+									  
+									  </tr>
+									  <tr>
+										<th colspan="2">星期六</th>
+										<th colspan="2">星期日</th>
+										<th colspan="2">星期一</th>
+										<th colspan="2">星期二</th>
+										<th colspan="2">星期三</th>
+										<th colspan="2">星期四</th>
+										<th colspan="2">星期五</th>
+									  </tr>
+								   </thead>
+								   <tbody>
+									{% for row in range(num) %}
+										<tr class="active">
+											{% for column in range(15) %}
+											<td> {{ filedata[row][column] }} </td>
+											{% endfor %}
+										</tr>
+									{% endfor %}
+								   </tbody>
+								</table>
+							</div>
 						</div><!-- white board table content -->							
                     </div>
                 </div>
             </div>
         </div> <!-- page content -->
     </div> <!-- wrapper -->
+	
+	
     <!-- Menu toggle script -->
     <script>
         $("#menu-toggle").click( function (e){
@@ -108,6 +112,7 @@
 	<!--block footer begin -->
 	{% block footer %}
 	  <div class="container">
+	  
 	  </div>
 	{% endblock %}<!--block footer end-->
 

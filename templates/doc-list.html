@@ -14,11 +14,11 @@
 			<caption><h1>文档列表</h1></caption>
 			
 			<div style="height:65%; overflow-y:auto">
-				<table class="table table-hover">
+				<table class="table table-striped table-hover table-condensed" border="1">
 				   <thead>
 					  <tr>
 							<th>序号</th>
-							<th>文件名 (点击文件名，可查看文件)</th>
+							<th>文件名(可点击查看)</th>
 							<th>文档类型</th>
 							<th>上传者</th>
 							<th>上传时间</th>
@@ -30,35 +30,35 @@
 						{% for i in range(num_file) %}
 							{% if 'server' == dirlist[i] %}  <!-- 不同文档类型，显示不同的背景色 -->
 							<tr class="active">    
-								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
 							
 								<td>
-									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</a>&nbsp;&nbsp;&nbsp;&nbsp;
 										<a href="{{ url_for('doc_server_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
 								 </td>
 							{% elif 'network' == dirlist[i] %}
 							<tr class="success">     
-								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
 							
 								<td>
-									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</a>&nbsp;&nbsp;&nbsp;&nbsp;
 										<a href="{{ url_for('doc_network_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
 								 </td>
 							{% elif 'inventory' == dirlist[i] %}
 							<tr class="warning">    
-								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
+								<td><a href="{{ url_for('doc_delete', filename=fnlist[i], doc_type=dirlist[i]) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green">{{i+1}}</font></td> 
 							
 								<td>
-									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-									</button></a>&nbsp;&nbsp;&nbsp;&nbsp;
+									<a href="{{ url_for('doc_name_edit', filename=fnlist[i]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+									</a>&nbsp;&nbsp;&nbsp;&nbsp;
 										<a href="{{ url_for('doc_inventory_show', filename=fnlist[i]) }}"> {{fnlist[i]}}</a>
 								 </td>
 							{% endif %}
 							
-							<td><a href="{{ url_for('doc_type_edit', filename=fnlist[i]) }}"><button type="button" class="btn btn-info"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-							 </button></a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green"> {{dirlist[i]}}</font></td>
+							<td><a href="{{ url_for('doc_type_edit', filename=fnlist[i]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+							 </a>&nbsp;&nbsp;&nbsp;&nbsp;<font size="3" face="arial" color="green"> {{dirlist[i]}}</font></td>
 						  
 						  
 							<!-- <td>{{dirlist[i]}}</td> -->
