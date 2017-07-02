@@ -414,7 +414,6 @@ def wb_del_member():
 def wb_review(filename):
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问白板历史记录')  #do the logging
 		
 		fn = filename
 
