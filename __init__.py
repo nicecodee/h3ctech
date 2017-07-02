@@ -103,10 +103,8 @@ def wb_show(week):
 			today = datetime.date.today()
 			if week == "thisweek":
 				start = today + datetime.timedelta(-2 - today.weekday())
-				write_log_info(u'查看本周白板')  #logging of user access
 			if week == "lastweek":
 				start = today + datetime.timedelta(-9 - today.weekday())
-				write_log_info(u'查看上周白板')  #logging of user access
 			weekdays = []
 			for i in range(7):
 				tmp_weekday = start + datetime.timedelta(days = i)
@@ -146,7 +144,6 @@ def wb_show(week):
 def wb_update_thisweek(name):
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问白板更新(本周)')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -180,7 +177,11 @@ def wb_update_thisweek(name):
 		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			halfday = range(14)		#用列表存储用户填入的数据	
+			#do the logging
+			write_log_info(u'更新本周白板')  
+			
+			#用列表存储用户填入的数据
+			halfday = range(14)			
 			halfday[0] = request.form['halfday0']
 			halfday[1] = request.form['halfday1']
 			halfday[2] = request.form['halfday2']
@@ -230,7 +231,6 @@ def wb_update_thisweek(name):
 def wb_update_lastweek(name):
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问白板更新(上周)')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -265,7 +265,11 @@ def wb_update_lastweek(name):
 		#页面下方表格，用于更新白板记录
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
-			halfday = range(14)		#用列表存储用户填入的数据	
+			# do the logging
+			write_log_info(u'更新上周白板') 
+			
+			#用列表存储用户填入的数据
+			halfday = range(14)			
 			halfday[0] = request.form['halfday0']
 			halfday[1] = request.form['halfday1']
 			halfday[2] = request.form['halfday2']
@@ -313,7 +317,6 @@ def wb_update_lastweek(name):
 def wb_add_member():
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问增加白板成员页面')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -329,6 +332,8 @@ def wb_add_member():
 		form = AddmemberForm(request.form)
 		path = WEEKLY_NAMELIST_PATH + 'namelist'
 		if request.method == "POST" and form.validate():
+			write_log_info(u'增加白板成员')  #do the logging
+			
 			name = form.name.data
 			data = name + ' - - - - - - - - - - - - - -'
 			#在namelist.log里添加该成员
@@ -351,7 +356,6 @@ def wb_add_member():
 def wb_del_member():
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问删除白板成员页面')   #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -371,6 +375,7 @@ def wb_del_member():
 		new_path_weekly = WEEKLY_PATH + 'tmp_del_member.log'		
 		
 		if request.method == "POST" and form.validate():
+			write_log_info(u'删除白板成员')  #do the logging
 			name = form.name.data
 			#删除namelist.log里的该成员
 			with open(old_path_namelist, 'r') as f, open(new_path_namelist, 'w') as fout:
@@ -409,7 +414,7 @@ def wb_del_member():
 def wb_review(filename):
 	try:
 		set_cn_encoding()	
-		write_log_info(u'访问白板历史记录')  #logging of user access
+		write_log_info(u'访问白板历史记录')  #do the logging
 		
 		fn = filename
 
