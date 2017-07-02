@@ -621,8 +621,8 @@ def write_log_info(log_info):
 		
 		timestr_filename = time.strftime("%Y%m%d", time.localtime())
 		path = LOGS_PATH + 'access_' +  timestr_filename
-		timestr_logon = time.strftime("%Y/%m/%d-%H:%M:%S-%p", time.localtime())
-
+		timestr_logon = time.strftime("%Y/%m/%d--%H:%M:%S-%p", time.localtime())
+	
 		with open(path, 'ab') as file:
 			if 'logged_in' in session:
 				c.execute("select * from login_user where username = (%s)", [session['username']])
