@@ -37,7 +37,7 @@ def login_required(f):
 			return redirect(url_for('login_page'))			
 			
 	return wrap	
-
+ 
 #solve the chinese code problem
 def	set_cn_encoding():
 	reload(sys)
@@ -103,8 +103,10 @@ def wb_show(week):
 			today = datetime.date.today()
 			if week == "thisweek":
 				start = today + datetime.timedelta(-2 - today.weekday())
+				write_log_info(u'查看本周白板')  #logging of user access
 			if week == "lastweek":
 				start = today + datetime.timedelta(-9 - today.weekday())
+				write_log_info(u'查看上周白板')  #logging of user access
 			weekdays = []
 			for i in range(7):
 				tmp_weekday = start + datetime.timedelta(days = i)
@@ -144,6 +146,7 @@ def wb_show(week):
 def wb_update_thisweek(name):
 	try:
 		set_cn_encoding()	
+		write_log_info(u'访问白板更新(本周)')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -227,6 +230,7 @@ def wb_update_thisweek(name):
 def wb_update_lastweek(name):
 	try:
 		set_cn_encoding()	
+		write_log_info(u'访问白板更新(上周)')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -309,6 +313,7 @@ def wb_update_lastweek(name):
 def wb_add_member():
 	try:
 		set_cn_encoding()	
+		write_log_info(u'访问增加白板成员页面')  #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
@@ -346,11 +351,12 @@ def wb_add_member():
 def wb_del_member():
 	try:
 		set_cn_encoding()	
+		write_log_info(u'访问删除白板成员页面')   #logging of user access
 		
 		#Get number of weekly whiteboards
 		num_wb = (sysadm_badges_number())[3]
 		#Get the list of weekly files
-		list = get_weekly_list()
+		list = get_weekly_list() 
 		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
@@ -403,6 +409,7 @@ def wb_del_member():
 def wb_review(filename):
 	try:
 		set_cn_encoding()	
+		write_log_info(u'访问白板历史记录')  #logging of user access
 		
 		fn = filename
 
@@ -596,7 +603,7 @@ def sysadm_badges_number():
 	
 	
 #do the logging when a user logs in
-def write_log_info(info_type):
+def write_log_info(log_info):
 	try:
 		c, conn = connection()
 		
@@ -614,26 +621,8 @@ def write_log_info(info_type):
 				#get the auth_type of first record
 				username_db = c.fetchone()[1] 
 				
-				#write logs according to the info_type
-				if 'login' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 登入'
-				elif 'register' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 注册并登入'
-				elif 'logout' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 退出'
-				elif 'server' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 访问了服务器岗文档'
-				elif 'serverDenied' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 尝试访问服务器岗文档库被系统拒绝'
-				elif 'network' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 访问了网络岗文档库'
-				elif 'networkDenied' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 尝试访问网络岗文档库被系统拒绝'
-				elif 'inventory' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 访问了资产岗文档库'
-				elif 'inventoryDenied' == info_type:
-					data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + u' 尝试访问资产岗文档库被系统拒绝'
-					
+				#write logs according to the log_info
+				data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + ' ' + log_info		
 				file.write(data + '\n') 
 
 	except Exception as e:
@@ -1064,7 +1053,7 @@ def doc_server_dashboard():
 	#check auth_type of the logged in user, if not matches, redirect to role_error_page
 	if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info('server')
+		write_log_info(u'访问服务器文库')
 		
 		doclist = []
 		for docfile in os.listdir(SERVER_DOCS_PATH):
@@ -1075,7 +1064,6 @@ def doc_server_dashboard():
 			
 		return  render_template("doc-server-dashboard.html", title=u'服务器岗文档库', num_server=num_server,doclist = doclist)
 	else:
-		write_log_info('serverDenied')
 		return redirect(url_for('role_error_page'))	
 
 # @app.route("/doc-server-show/quote(<filename>)/")		
@@ -1133,7 +1121,7 @@ def doc_network_dashboard():
 	#check if auth_type matches
 	if 'net' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info('network')
+		write_log_info(u'访问网络文库')
 		
 		doclist = []
 		for docfile in os.listdir(NETWORK_DOCS_PATH):
@@ -1144,7 +1132,6 @@ def doc_network_dashboard():
 		
 		return  render_template("doc-network-dashboard.html", title=u'网络岗文档库', num_network=num_network,doclist = doclist)	
 	else:
-		write_log_info('networkDenied')
 		return redirect(url_for('role_error_page'))	
 	
 
@@ -1164,7 +1151,7 @@ def doc_inventory_dashboard():
 	#check if auth_type matches
 	if 'inv' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info('inventory')
+		write_log_info(u'访问资产文库')
 		
 		doclist = []
 		for docfile in os.listdir(INVENTORY_DOCS_PATH):
@@ -1175,7 +1162,6 @@ def doc_inventory_dashboard():
 		
 		return  render_template("doc-inventory-dashboard.html", title=u'资产岗文档库', num_inventory=num_inventory,doclist = doclist)			
 	else:
-		write_log_info('inventoryDenied')
 		return redirect(url_for('role_error_page'))	
 		
 	
@@ -1188,7 +1174,7 @@ def page_not_found(e):
 @app.route("/logout/")
 @login_required
 def logout():
-	write_log_info('logout') #do the logging
+	write_log_info(u'退出') #do the logging
 	
 	session.clear()
 	flash(u"您已退出系统！")
@@ -1220,7 +1206,7 @@ def login_page():
 				session['username'] = request.form['username']
 				session['auth_type_db'] = auth_type_db
 				
-				write_log_info('login')  #do the logging
+				write_log_info(u'登入')  #do the logging
 				#flash(u"您已成功登陆!")
 				
 				#redirect to the exact url I want to access
@@ -1282,7 +1268,7 @@ def register_page():
 				session['username'] = username
 
 				
-				write_log_info('register') #do the logging
+				write_log_info(u'注册并登入') #do the logging
 				
 				#return redirect(url_for('homepage'))
 				return redirect(url_for('wb_show', week='thisweek')) #根据实际需要，注册后直接跳转到白板页
