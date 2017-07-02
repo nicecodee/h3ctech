@@ -1065,7 +1065,7 @@ def doc_server_dashboard():
 	#check auth_type of the logged in user, if not matches, redirect to role_error_page
 	if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info(u'访问服务器文库')
+		# write_log_info(u'访问服务器文库')  #do the logging
 		
 		doclist = []
 		for docfile in os.listdir(SERVER_DOCS_PATH):
@@ -1133,7 +1133,7 @@ def doc_network_dashboard():
 	#check if auth_type matches
 	if 'net' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info(u'访问网络文库')
+		# write_log_info(u'访问网络文库')  #do the logging
 		
 		doclist = []
 		for docfile in os.listdir(NETWORK_DOCS_PATH):
@@ -1163,7 +1163,7 @@ def doc_inventory_dashboard():
 	#check if auth_type matches
 	if 'inv' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		set_cn_encoding()
-		write_log_info(u'访问资产文库')
+		# write_log_info(u'访问资产文库')  #do the logging
 		
 		doclist = []
 		for docfile in os.listdir(INVENTORY_DOCS_PATH):
