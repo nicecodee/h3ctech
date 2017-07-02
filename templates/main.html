@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 		
 		{% if title %}
 		<title>{{ title }} - h3cTech</title>
@@ -26,8 +24,6 @@
 		
 		<!-- Custom styles for index cover -->
 		<link href="/static/css/cover.css" rel="stylesheet">
-		
-		
 		
 	</head>
 
@@ -51,16 +47,18 @@
 				</div>
 			  </div>
 			  		  
-			  <img src="/static/images/bird.jpg" class="img-circle" width="220" height="220" class="img-responsive">
-			  <br><br><br>
+			  <a href="{{ url_for('wb_show', week='thisweek') }}"><img src="/static/images/laptop2.jpg" class="img-circle" width="170" height="170" class="img-responsive"></a>
+			  <br><br>
 			  <div class="inner cover" style="width: 100%">
 				<!-- <h1 class="cover-heading">欢迎访问白板</h1> -->
-				<p class="lead">白板支持外网访问（内网请使用PAC脚本设置代理） </p>
+				<!-- <p class="lead">白板支持外网访问（内网请使用PAC脚本设置代理） </p> -->		
 				<p class="lead">
-				  <a href="{{ url_for('wb_show', week='thisweek') }}" class="btn btn-lg btn-info">Go!</a>
+				  <a href="#" class="btn btn-xs btn-danger">Click it &nbsp;<span class="glyphicon glyphicon-arrow-up"></span></a>
 				</p>
+				<br>
+				<p class="text-muted">白板支持外网访问（内网请使用PAC脚本设置代理）</p>
 				
-			  </div>
+			  </div> 
 
 			  <div class="mastfoot">
 				<div class="inner">
