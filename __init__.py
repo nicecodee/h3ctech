@@ -241,7 +241,7 @@ def wb_update_lastweek(name):
 			tmp_weekday = start + datetime.timedelta(days = i)
 			weekdays.append(tmp_weekday)
 
-		#页面上方表格，自动列出当前白板记录
+		#页面上方表格，自动列出所选成员的当前白板记录
 		path = WEEKLY_PATH + 'weekly_' + str(start)	
 		with open(path, 'r') as file:
 			for line in file:
@@ -660,10 +660,6 @@ def homepage():
 @app.route("/test/")
 def test():
 	return  render_template("test.html", title=u'测试页面')
-	
-@app.route("/about-team/")
-def about_team():
-	return  render_template("about-team.html", title=u'团队介绍')
 	
 
 
