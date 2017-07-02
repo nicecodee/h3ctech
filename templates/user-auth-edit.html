@@ -19,7 +19,7 @@
 			<form class="form-horizontal" method ="POST" action="{{ url_for('user_auth_edit', username=username) }}">
 				<div>
 				   <label class="checkbox-inline">
-					  <input type="radio" name="user_auth" value="None" checked> 无访问权限(None/Null)
+					  <input type="radio" name="user_auth" value="None" checked> 不可访问(None/Null)
 				   </label>
 				   <label class="checkbox-inline">
 					  <input type="radio" name="user_auth" value="ser"> 服务器岗(ser)
@@ -31,10 +31,10 @@
 					  <input type="radio" name="user_auth" value="inv"> 资产岗(inv)
 				   </label>
 				   <label class="checkbox-inline">
-					  <input type="radio" name="user_auth" value="h3c"> h3c白板用户(h3c)
+					  <input type="radio" name="user_auth" value="h3c"> h3c普通用户(h3c)
 				   </label>
 				   	<label class="checkbox-inline">
-					  <input type="radio" name="user_auth" value="h3cadm"> h3c白板管理员(h3cadm)
+					  <input type="radio" name="user_auth" value="h3cadm"> h3c管理员(h3cadm)
 				   </label>
 				   <label class="checkbox-inline">
 					  <input type="radio" name="user_auth" value="superadm"><font face="arial" color="red"> 超级管理员(superadm)</font></td>

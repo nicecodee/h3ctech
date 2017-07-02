@@ -178,7 +178,8 @@ def wb_update_thisweek(name):
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
 			#do the logging
-			write_log_info(u'更新本周白板')  
+			log_info = u'更新本周白板--' + name
+			write_log_info(log_info)  
 			
 			#用列表存储用户填入的数据
 			halfday = range(14)			
@@ -266,7 +267,8 @@ def wb_update_lastweek(name):
 		form = WhiteboardForm(request.form)
 		if request.method == "POST":
 			# do the logging
-			write_log_info(u'更新上周白板') 
+			log_info = u'更新上周白板--' + name
+			write_log_info(log_info)  
 			
 			#用列表存储用户填入的数据
 			halfday = range(14)			
@@ -331,9 +333,7 @@ def wb_add_member():
 		
 		form = AddmemberForm(request.form)
 		path = WEEKLY_NAMELIST_PATH + 'namelist'
-		if request.method == "POST" and form.validate():
-			write_log_info(u'增加白板成员')  #do the logging
-			
+		if request.method == "POST" and form.validate():	
 			name = form.name.data
 			data = name + ' - - - - - - - - - - - - - -'
 			#在namelist.log里添加该成员
@@ -342,6 +342,10 @@ def wb_add_member():
 			#在最新的weekly_xxxx-xx-xx里添加该成员	
 			with open(WEEKLY_PATH+files[0], 'ab') as f:
 				f.write(data + '\n') 				
+			
+			#do the logging
+			log_info = u'增加白板成员--' + name
+			write_log_info(log_info)  
 			
 			flash('成员添加成功!')
 			return redirect(url_for('wb_add_member'))	 
@@ -375,7 +379,6 @@ def wb_del_member():
 		new_path_weekly = WEEKLY_PATH + 'tmp_del_member.log'		
 		
 		if request.method == "POST" and form.validate():
-			write_log_info(u'删除白板成员')  #do the logging
 			name = form.name.data
 			#删除namelist.log里的该成员
 			with open(old_path_namelist, 'r') as f, open(new_path_namelist, 'w') as fout:
@@ -395,6 +398,11 @@ def wb_del_member():
 						NAME_EXIST = 1
 			if NAME_EXIST == 1:     #仅当姓名完全匹配时，新文件改名为旧文件（相当于覆盖旧文件）	
 				os.rename(new_path_weekly, old_path_weekly)	
+				
+				#do the logging
+				log_info = u'删除白板成员--' + name
+				write_log_info(log_info) 
+				
 				flash('成员删除成功!')
 			else:					#姓名不匹配，删除新文件（即临时文件）
 				os.remove(new_path_weekly)
