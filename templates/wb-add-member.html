@@ -5,7 +5,7 @@
 <br>
 <br>	
 
-<div class="row">
+<div class="row" style="margin-top:30px;">
 	<!-- left panel: collapse view -->
    <div class="col-sm-1 col-md-4">
    </div><!-- left panel end -->
@@ -13,13 +13,14 @@
    <!-- middle panel: table content -->
    <div class="col-sm-10 col-md-4">
 		<div class="leaderboard">
-			<br>
+			<h1>增加成员</h1>
+			<br><br>
 			{% from "_formhelpers.html" import render_field %}
 			<form method=post action="/wb-add-member/">
 				<dl >
 					{{render_field(form.name)}}		
 				</dl>
-				<p><input type=submit class="btn btn-success" value=增加成员></p>
+				<p><input type=submit class="btn btn-success" value=确认添加></p>
 			</form>
 			<a href="{{ url_for('wb_show', week='thisweek') }}" role="button"><span class="label label-info" >查看名单</span></a>
 			
