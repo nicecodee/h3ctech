@@ -49,14 +49,15 @@
 				  <tr>
 					<th>日期时间</th>
 					<th>用户名</th>
-					<th>登陆IP</th>
+					<th>用户IP</th>
+					<th>用户终端</th>
 					<th>用户行为</th>
 				  </tr>
 			   </thead>
 			   <tbody>
 				{% for row in range(num) %}
 					<tr class="active">
-						{% for column in range(4) %}
+						{% for column in range(5) %}
 						<td> {{ data[row][column] }} </td>
 						{% endfor %}
 					</tr>

@@ -10,7 +10,9 @@ from functools import wraps
 import os, sys
 import requests
 import shutil
-#tablib导入uwsgi.log会报错（uwsgi无法load app）,目前无解
+#导入parse后uwsgi.log会报错（uwsgi无法load app）,目前无解
+# from user_agents import parse
+#tablib导入后uwsgi.log会报错（uwsgi无法load app）,目前无解
 #import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
@@ -621,20 +623,28 @@ def write_log_info(log_info):
 		
 		timestr_filename = time.strftime("%Y%m%d", time.localtime())
 		path = LOGS_PATH + 'access_' +  timestr_filename
-		timestr_logon = time.strftime("%Y/%m/%d--%H:%M:%S-%p", time.localtime())
+		timestr_logon = time.strftime("%Y/%m/%d--%H:%M:%S", time.localtime())
 	
 		with open(path, 'ab') as file:
 			if 'logged_in' in session:
 				c.execute("select * from login_user where username = (%s)", [session['username']])
 				
 				ip_addr = request.remote_addr
+				
+				#get browser info from the user agent of the http request header
+				ua_platform = request.user_agent.platform
+				ua_browser = request.user_agent.browser	
+				ua_version = request.user_agent.version				
+				# ua_string = (request.headers.get('User-Agent')).replace(" ","/")
+			
 				ip_loc = get_ip_info(ip_addr)
 				
 				#get the auth_type of first record
 				username_db = c.fetchone()[1] 
 				
-				#write logs according to the log_info
-				data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + ' ' + log_info		
+				#write logs according to the log_info	
+				data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + ' ' + ua_platform \
+				+  '-' + ua_browser + '-' + ua_version +  ' ' + log_info				
 				file.write(data + '\n') 
 
 	except Exception as e:
