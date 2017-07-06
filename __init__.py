@@ -15,7 +15,7 @@ import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
 from config import SECRET_KEY, instance_path, LOGS_PATH,SERVER_DOCS_PATH, NETWORK_DOCS_PATH, INVENTORY_DOCS_PATH, \
-      DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS,WEEKLY_PATH,WEEKLY_NAMELIST_PATH
+      DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS,WEEKLY_PATH, WEEKLY_EXCEL_PATH, WEEKLY_NAMELIST_PATH
 
 
 app = Flask(__name__)
@@ -90,6 +90,7 @@ def wb_show(week):
 		num_wb = (sysadm_badges_number())[3]
 		#Get the list of weekly files
 		list = get_weekly_list()
+		
 			
 		c, conn = connection()
 		c.execute("select * from login_user where username = (%s)", [session['username']])
@@ -199,7 +200,10 @@ def wb_update_thisweek(name):
 			halfday[13] = request.form['halfday13']
 			
 			old_path = WEEKLY_PATH + 'weekly_' + str(start)
-			new_path = WEEKLY_PATH + 'tmp_upt_thisweek.log'		
+			new_path = WEEKLY_PATH + 'tmp_upt_thisweek.log'	
+			
+			#这里的filename是为了更新excel文件(weekly数据更新，对应的excel也要随之更新)
+			filename = 'weekly_' + str(start)
 			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
@@ -217,6 +221,10 @@ def wb_update_thisweek(name):
 						line = name + " " + halfday + '\n'
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
+			
+			#更新对应的excel文件
+			wb_create_excel(filename)
+			
 			return redirect(url_for('wb_update_thisweek', name=name))	 
 		return render_template("wb-update-thisweek.html", title=u'本周白板-更新', form=form, weekdays=weekdays, \
 		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
@@ -290,6 +298,9 @@ def wb_update_lastweek(name):
 			old_path = WEEKLY_PATH + 'weekly_' + str(start)
 			new_path = WEEKLY_PATH + 'tmp_upt_lastweek.log'		
 			
+			#这里的filename是为了更新excel文件(weekly数据更新，对应的excel也要随之更新)
+			filename = 'weekly_' + str(start)
+			
 			#把空白内容转换为“- ”，非空白内容后面添加一个空格
 			for i in range(14):
 				halfday[i] = "".join(halfday[i].split())  #删除输入内容中的所有空格，也可用：halfday[i] = halfday[i].replace(" ","")
@@ -306,6 +317,10 @@ def wb_update_lastweek(name):
 						line = name + " " + halfday + '\n'
 					fout.write(line)  
 				os.rename(new_path, old_path)  #新文件改回为原文件的名字
+				
+			#更新对应的excel文件
+			wb_create_excel(filename)	
+				
 			return redirect(url_for('wb_update_lastweek', name=name))	 
 		return render_template("wb-update-lastweek.html", title=u'上周白板-更新', form=form, weekdays=weekdays, \
 		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
@@ -325,7 +340,6 @@ def wb_add_member():
 		#Get the list of weekly files
 		list = get_weekly_list()
 		
-		
 		#取得weekly目录下的所有文件（列表）
 		files = os.listdir(WEEKLY_PATH)
 		#列表按文件名排序，让最新的weekly_xxxx-xx-xx成为列表第一个元素
@@ -341,13 +355,20 @@ def wb_add_member():
 				f.write(data + '\n') 	
 			#在最新的weekly_xxxx-xx-xx里添加该成员	
 			with open(WEEKLY_PATH+files[0], 'ab') as f:
-				f.write(data + '\n') 				
+				f.write(data + '\n') 	
+				
+			#这里的filename是为了更新excel文件(weekly人名更新，对应的excel也要随之更新)
+			filename = files[0]
 			
 			#do the logging
 			log_info = u'增加白板成员--' + name
 			write_log_info(log_info)  
 			
-			flash('成员添加成功!')
+			flash(u'成员添加成功!')
+			
+			#更新对应的excel文件
+			wb_create_excel(filename)
+			
 			return redirect(url_for('wb_add_member'))	 
 
 		return render_template("wb-add-member.html", title=u'增加成员', form=form, num_wb=num_wb, list=list)
@@ -378,6 +399,9 @@ def wb_del_member():
 		old_path_weekly = WEEKLY_PATH + files[0]
 		new_path_weekly = WEEKLY_PATH + 'tmp_del_member.log'		
 		
+		#这里的filename是为了更新excel文件(如果weekly人名更新，对应的excel也要随之更新)
+		filename = files[0]
+		
 		if request.method == "POST" and form.validate():
 			name = form.name.data
 			#删除namelist.log里的该成员
@@ -403,10 +427,14 @@ def wb_del_member():
 				log_info = u'删除白板成员--' + name
 				write_log_info(log_info) 
 				
-				flash('成员删除成功!')
+				flash(u'成员删除成功!')
+				
+				#更新对应的excel文件
+				wb_create_excel(filename)
+			
 			else:					#姓名不匹配，删除新文件（即临时文件）
 				os.remove(new_path_weekly)
-				flash('该成员不存在，请输入正确的姓名!')
+				flash(u'该成员不存在，请输入正确的姓名!')
 			
 			return redirect(url_for('wb_del_member'))
 				
@@ -479,50 +507,48 @@ def wb_review(filename):
 		
 		
 #To create a excel file(filename.xlsx)
-# def wb_create_xlsx():
-	# try:
-		# set_cn_encoding()	
+def wb_create_excel(filename):
+	try:
+		set_cn_encoding()	
 		
-		# filename="weekly_2017-06-10"
-		# fn = filename
+		fn = filename
 		
-		# #根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
-		# #start = filename.split("_")[1]
-		# start = "2017-06-10"
-		# start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
-		# start = "2017-06-10"
+		#根据文件名（如：weekly_2017-03-21），截取得到该周起始日期（2017-03-21）
+		start = filename.split("_")[1]
+		start_day = datetime.datetime.strptime(start, '%Y-%m-%d')  #字符串转换为时间格式(2017-03-21 00:00:00)
 		
-		# weekdays = []
-		# for i in range(7):     #计算该周的所有日期
-			# tmp_weekday = start_day + datetime.timedelta(days = i)
-			# tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
-			# weekdays.append(tmp_weekday)
+		weekdays = []
+		for i in range(7):     #计算该周的所有日期
+			tmp_weekday = start_day + datetime.timedelta(days = i)
+			tmp_weekday = (str(tmp_weekday)).split()[0]  #只截取日期（即只截取 2017-03-21 00:00:00 的部分)
+			weekdays.append(tmp_weekday)
 		
-		# #自定义tblib的excel hearders
-		# j = 0
-		# my_headers = range(15)
-		# for i in range(15):
-			# if i == 0:
-				# my_headers[i] = 'NAME'
-				# continue
-			# if i % 2 == 0:
-				# my_headers[i] = '-'
-			# else:
-				# my_headers[i] = weekdays[j]
-				# j = j + 1
+		#自定义tblib的excel hearders
+		j = 0
+		my_headers = range(15)
+		for i in range(15):
+			if i == 0:
+				my_headers[i] = u'姓名'
+				continue
+			if i % 2 == 0:
+				my_headers[i] = '-'
+			else:
+				my_headers[i] = weekdays[j]
+				j = j + 1
 		
-		# data=tablib.Dataset()
-		# data.headers = my_headers
+		data=tablib.Dataset()
+		data.headers = my_headers
 		
-		# weekly_file_path = WEEKLY_PATH + fn
-		# excel_file_path = WEEKLY_EXCEL_PATH + "weekly_" + start + ".xlsx"
-		# with open(weekly_file_path,"r") as f,open(excel_file_path, 'wb') as fout:
-			# for line in f:
-				# data.append(line.split())
-			# fout.write(data.xlsx)
+		#从weekly文件逐行读取，生成excel文件
+		weekly_file_path = WEEKLY_PATH + fn
+		excel_file_path = WEEKLY_EXCEL_PATH + filename + ".xlsx"
+		with open(weekly_file_path,"r") as f,open(excel_file_path, 'wb') as fout:
+			for line in f:
+				data.append(line.split())
+			fout.write(data.xlsx)
 				
-	# except Exception as e:
-		# return(str(e))
+	except Exception as e:
+		return(str(e))
 		
 	
 #get the location from user's ip
@@ -548,19 +574,19 @@ def get_ip_info(ip):
 
 
 #create dir tree-view
-def make_tree(path):
-    tree = dict(name=os.path.basename(path), children=[])
-    try: lst = os.listdir(path)
-    except OSError:
-        pass #ignore errors
-    else:
-        for name in lst:
-            fn = os.path.join(path, name)
-            if os.path.isdir(fn):
-                tree['children'].append(make_tree(fn))
-            else:
-                tree['children'].append(dict(name=name))
-    return tree	
+# def make_tree(path):
+    # tree = dict(name=os.path.basename(path), children=[])
+    # try: lst = os.listdir(path)
+    # except OSError:
+        # pass #ignore errors
+    # else:
+        # for name in lst:
+            # fn = os.path.join(path, name)
+            # if os.path.isdir(fn):
+                # tree['children'].append(make_tree(fn))
+            # else:
+                # tree['children'].append(dict(name=name))
+    # return tree	
 	
 	
 #calculate the number of docs of different type for badges displaying
@@ -728,7 +754,7 @@ def user_delete(username):
 		c.close()
 		conn.close()
 		gc.collect()
-		flash('用户删除成功!')
+		flash(u'用户删除成功!')
 		return  redirect(url_for('user_list'))
 	
 	except Exception as e:

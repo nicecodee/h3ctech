@@ -24,15 +24,15 @@
 						{% for item in list %}
 							{% if fn == item %}
 								<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}&nbsp;&nbsp;</a>
-									<span class="glyphicon glyphicon-hand-left"></span>&nbsp;&nbsp;
+									<span class="glyphicon glyphicon-hand-left"></span>&nbsp;&nbsp; 
 									{% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %}
-										<a href="/static/weekly/{{ item }}"><span class="glyphicon glyphicon-save pull-right"></span></a>
+										<a href="/static/weekly_excel/{{ item ~ '.xlsx' }}"><span class="glyphicon glyphicon-save pull-right"></span></a>
 									{% endif %}	
 								</li>
 							{% else %}
 								<li><a href="{{ url_for('wb_review', filename=item) }}" >{{item}}&nbsp;&nbsp;</a>
-								   {% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %}
-										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly/{{ item }}"><span class="glyphicon glyphicon-save pull-right"></span></a>
+								   {% if session.auth_type_db == 'h3cadm' or session.auth_type_db == 'superadm' %} 
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/static/weekly_excel/{{ item ~ '.xlsx' }}"><span class="glyphicon glyphicon-save pull-right"></span></a>
 								   {% endif %}	
 								</li>
 							{% endif %}				
