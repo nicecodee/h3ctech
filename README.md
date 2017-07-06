@@ -1,2 +1,9 @@
 This is the website for my daily job.
-Note: config.py and dbconnect.py are not uploaded due to security consideration!!
+
+The following files or directory were not not uploaded due to security consideration!!
+（1）config.py and dbconnect.py
+（2）
+weekly/
+weekly_excel/
+weekly_namelist/
+access_logs/
