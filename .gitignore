@@ -16,10 +16,12 @@ build
 *.pdf
 *.doc
 *.log
+*.xlsx
 *.png
 *.jpg
 namelist
-/weekly
+weekly/
+weekly_excel/
 *.bak
 config.py
 dbconnect.py
