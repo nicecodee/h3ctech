@@ -10,10 +10,8 @@ from functools import wraps
 import os, sys
 import requests
 import shutil
-#导入parse后uwsgi.log会报错（uwsgi无法load app）,目前无解
-# from user_agents import parse
-#tablib导入后uwsgi.log会报错（uwsgi无法load app）,目前无解
-#import tablib
+from user_agents import parse
+import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
 from config import SECRET_KEY, instance_path, LOGS_PATH,SERVER_DOCS_PATH, NETWORK_DOCS_PATH, INVENTORY_DOCS_PATH, \
@@ -629,13 +627,13 @@ def write_log_info(log_info):
 			if 'logged_in' in session:
 				c.execute("select * from login_user where username = (%s)", [session['username']])
 				
-				ip_addr = request.remote_addr
+				#ip_addr = request.remote_addr
+				ip_addr = request.headers['X-Real-Ip']
 				
-				#get browser info from the user agent of the http request header
-				ua_platform = request.user_agent.platform
-				ua_browser = request.user_agent.browser	
-				ua_version = request.user_agent.version				
-				# ua_string = (request.headers.get('User-Agent')).replace(" ","/")
+				#get browser info from the user agent of the http request header			
+				ua = request.headers.get('User-Agent')
+				ua_tmp = parse(ua)
+				ua_string = (str(ua_tmp)).replace(" ","")
 			
 				ip_loc = get_ip_info(ip_addr)
 				
@@ -643,8 +641,8 @@ def write_log_info(log_info):
 				username_db = c.fetchone()[1] 
 				
 				#write logs according to the log_info	
-				data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + ' ' + ua_platform \
-				+  '-' + ua_browser + '-' + ua_version +  ' ' + log_info				
+				data = timestr_logon + ' ' + username_db + ' ' + ip_addr + '-' + ip_loc + ' ' + ua_string \
+				+ ' ' + log_info				
 				file.write(data + '\n') 
 
 	except Exception as e:
