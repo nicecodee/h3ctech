@@ -22,6 +22,8 @@ build
 namelist
 weekly/
 weekly_excel/
+weekly_namelist/
+access_logs/
 *.bak
 config.py
 dbconnect.py
