@@ -2,20 +2,22 @@
 
 {% block page_panel %}
 
-<div class="row" style="margin-top:20px;">
-	<!-- left panel: collapse view -->
-   <div class="col-sm-6 col-md-2">
-		<!-- collapse view -->
-		<div>
+	<!-- wrapper -->
+    <div id="wrapper" style="margin-top:20px;">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
 			<div class="panel-group" id="accordion">
 			   <div class="panel panel-info">
+				<!--panel-heading-->
 				  <div class="panel-heading">
 					 <h4 class="panel-title">
 						<a data-toggle="collapse" data-parent="#accordion" 
-						   href="#collapseOne"> 资产岗文档(展开/收起)
+						   href="#collapseOne"> 资产岗文档
 						</a><span class="badge pull-right">{{num_inventory}}</span>
 					 </h4>
-				  </div>
+				  </div><!--panel-heading-->
+				  
+				  <!--panel-collapse-->
 				  <div id="collapseOne" class="panel-collapse collapse in" align="left">
 					 <div class="panel-body">
 						<ul>
@@ -25,26 +27,52 @@
 							{% else %}
 								<li><a href="{{ url_for('doc_inventory_show', filename=doc) }}" >{{doc}}</a></li>
 							{% endif %}
-						{% endfor %}			
+						{% endfor %}
 						</ul>
 					 </div>
-				  </div>
+				  </div> <!--panel-collapse-->
 			   </div>
 			</div>
-
-		</div>
+        </div> <!-- Sidebar -->
+		
 		<script type="text/javascript">
 		   $(function () { $('#collapseOne').collapse('show')});
-		   <!-- $(function () { $('#collapseTwo').collapse({'hide'})}); -->
 		</script>
-   </div><!-- left panel end -->
-   
-   <!-- right panel: table content -->
-   <div class="col-sm-6 col-md-10">
-		<div class="leaderboard">
-			<iframe src="/static/pdfjs-v1.5.347/web/viewer.html?file=/static/docs/inventory/{{filename}}" frameborder="0" width="97%" height="900"></iframe>
-		</div>
-	</div>
-</div><!-- right panel end -->
+
+        <!-- page content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+						<!-- toggle button -->
+                        <a href="#" class="btn btn-default" id="menu-toggle" style="margin-top:0px;float:left;"><span class="glyphicon glyphicon-th-list"></span></a>	
+						
+						<!-- pdf document content -->
+						<caption><h4>《{{filename}}》</h4></caption>
+						<div class="leaderboard" style="margin-left:20px;">
+							<iframe src="/static/pdfjs-v1.5.347/web/viewer.html?file=/static/docs/inventory/{{filename}}" frameborder="0" width="97%" height="900"></iframe>
+						</div>
+						<!-- pdf document content -->							
+                    </div>
+                </div>
+            </div>
+        </div> <!-- page content -->
+    </div> <!-- wrapper -->
+	<br><br><br>
+	
+    <!-- Menu toggle script -->
+    <script>
+        $("#menu-toggle").click( function (e){
+            e.preventDefault();
+            $("#wrapper").toggleClass("menuDisplayed");
+        });
+    </script>
+			
+	<!--block footer begin -->
+	{% block footer %}
+	  <div class="container">
+	  
+	  </div>
+	{% endblock %}<!--block footer end-->
 
 {% endblock %}<!--block page_panel-->
