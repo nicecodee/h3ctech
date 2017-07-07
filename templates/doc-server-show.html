@@ -21,7 +21,7 @@
 						<ul>
 						{% for doc in doclist %}
 							{% if filename == doc %}
-								<li><a href="{{ url_for('doc_server_show', filename=doc) }}" >{{doc}}&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"" aria-hidden="true"></span></a></li>
+								<li><a href="{{ url_for('doc_server_show', filename=doc) }}" >{{doc}}&nbsp;&nbsp;<span class="glyphicon glyphicon-hand-left"" aria-hidden="true"></span></a></li>
 							{% else %}
 								<li><a href="{{ url_for('doc_server_show', filename=doc) }}" >{{doc}}</a></li>
 							{% endif %}

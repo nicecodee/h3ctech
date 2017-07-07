@@ -1070,11 +1070,14 @@ def doc_list():
 	except Exception as e:
 		return str(e)
 
-	
-#Server docs viewing
-@app.route("/doc-server-dashboard/")
+		
+@app.route("/doc-server-show/<filename>/")
+@app.route("/doc-server-show/")
 @login_required
-def doc_server_dashboard():	
+def doc_server_show(filename):	
+	set_cn_encoding()
+	filename = filename.encode('utf-8')
+	
 	c, conn = connection()
 	#Be carefule!! Must use [] to quote session['username'] , otherwise it will
 	#prompt a warning like: "not all arguments converted during string formatting"
@@ -1083,35 +1086,24 @@ def doc_server_dashboard():
 	#get the auth_type of first record
 	auth_type_db = c.fetchone()[5]
 	
+	#Get number of docs of server
+	num_server = (docs_badges_number())[0]	
+	
 	#check auth_type of the logged in user, if not matches, redirect to role_error_page
 	if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
-		set_cn_encoding()
-		# write_log_info(u'访问服务器文库')  #do the logging
-		
 		doclist = []
 		for docfile in os.listdir(SERVER_DOCS_PATH):
 			doclist.append(docfile)
-
-		#Get number of docs of server
-		num_server = (docs_badges_number())[0]	
+		#如果传入的文件名为“first_doc”,说明这是首次进入本页面，直接显示第一个文档，否则filename=用户点击的文件名
+		if filename == "first_doc":
+			filename = doclist[0]
+		else:                      
+			filename = filename
 			
-		return  render_template("doc-server-dashboard.html", title=u'服务器岗文档库', num_server=num_server,doclist = doclist)
+		return  render_template("doc-server-show.html", title=u'服务器岗文档', \
+		filename=filename, num_server=num_server, doclist=doclist)		
 	else:
 		return redirect(url_for('role_error_page'))	
-
-# @app.route("/doc-server-show/quote(<filename>)/")		
-@app.route("/doc-server-show/<filename>/")
-@app.route("/doc-server-show/")
-@login_required
-def doc_server_show(filename):	
-	set_cn_encoding()
-	filename = filename.encode('utf-8')
-	
-	doclist = []
-	for docfile in os.listdir(SERVER_DOCS_PATH):
-		doclist.append(docfile)
-	return  render_template("doc-server-show.html", title=u'服务器岗文档', filename=filename, doclist=doclist)		
-		
 
 @app.route("/doc-network-show/<filename>/")
 @app.route("/doc-network-show/")
@@ -1119,11 +1111,33 @@ def doc_server_show(filename):
 def doc_network_show(filename):
 	set_cn_encoding()
 	filename = filename.encode('utf-8')
-
-	doclist = []
-	for docfile in os.listdir(NETWORK_DOCS_PATH):
-		doclist.append(docfile)
-	return  render_template("doc-network-show.html", title=u'网络岗文档', filename=filename, doclist=doclist)	
+	
+	c, conn = connection()
+	#Be carefule!! Must use [] to quote session['username'] , otherwise it will
+	#prompt a warning like: "not all arguments converted during string formatting"
+	c.execute("select * from login_user where username = (%s)", [session['username']])
+	
+	#get the auth_type of first record
+	auth_type_db = c.fetchone()[5]
+	
+	#Get number of docs of server
+	num_network = (docs_badges_number())[1]	
+	
+	#check auth_type of the logged in user, if not matches, redirect to role_error_page
+	if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
+		doclist = []
+		for docfile in os.listdir(NETWORK_DOCS_PATH):
+			doclist.append(docfile)
+		#如果传入的文件名为“first_doc”,说明这是首次进入本页面，直接显示第一个文档，否则filename=用户点击的文件名
+		if filename == "first_doc":
+			filename = doclist[0]
+		else:                      
+			filename = filename
+			
+		return  render_template("doc-network-show.html", title=u'网络岗文档', \
+		filename=filename, num_network=num_network, doclist=doclist)		
+	else:
+		return redirect(url_for('role_error_page'))		
 	
 
 @app.route("/doc-inventory-show/<filename>/")
@@ -1133,16 +1147,6 @@ def doc_inventory_show(filename):
 	set_cn_encoding()
 	filename = filename.encode('utf-8')
 	
-	doclist = []
-	for docfile in os.listdir(INVENTORY_DOCS_PATH):
-		doclist.append(docfile)
-	return  render_template("doc-inventory-show.html", title=u'资产岗文档', filename=filename, doclist=doclist)
-
-	
-#Network docs viewing	
-@app.route("/doc-network-dashboard/")
-@login_required
-def doc_network_dashboard():	
 	c, conn = connection()
 	#Be carefule!! Must use [] to quote session['username'] , otherwise it will
 	#prompt a warning like: "not all arguments converted during string formatting"
@@ -1151,52 +1155,26 @@ def doc_network_dashboard():
 	#get the auth_type of first record
 	auth_type_db = c.fetchone()[5]
 	
-	#check if auth_type matches
-	if 'net' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
-		set_cn_encoding()
-		# write_log_info(u'访问网络文库')  #do the logging
-		
-		doclist = []
-		for docfile in os.listdir(NETWORK_DOCS_PATH):
-			doclist.append(docfile)
-		
-		#Get number of docs of network
-		num_network = (docs_badges_number())[1]	
-		
-		return  render_template("doc-network-dashboard.html", title=u'网络岗文档库', num_network=num_network,doclist = doclist)	
-	else:
-		return redirect(url_for('role_error_page'))	
+	#Get number of docs of server
+	num_inventory = (docs_badges_number())[2]	
 	
-
-
-#Inventory docs viewing	
-@app.route("/doc-inventory-dashboard/")
-@login_required
-def doc_inventory_dashboard():	
-	c, conn = connection()
-	#Be carefule!! Must use [] to quote session['username'] , otherwise it will
-	#prompt a warning like: "not all arguments converted during string formatting"
-	c.execute("select * from login_user where username = (%s)", [session['username']])
-	
-	#get the auth_type of first record
-	auth_type_db = c.fetchone()[5]
-	
-	#check if auth_type matches
-	if 'inv' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
-		set_cn_encoding()
-		# write_log_info(u'访问资产文库')  #do the logging
-		
+	#check auth_type of the logged in user, if not matches, redirect to role_error_page
+	if 'ser' == auth_type_db or 'adm' == auth_type_db or 'superadm' == auth_type_db:
 		doclist = []
 		for docfile in os.listdir(INVENTORY_DOCS_PATH):
 			doclist.append(docfile)
-		
-		#Get number of docs of inventory
-		num_inventory = (docs_badges_number())[2]	
-		
-		return  render_template("doc-inventory-dashboard.html", title=u'资产岗文档库', num_inventory=num_inventory,doclist = doclist)			
+		#如果传入的文件名为“first_doc”,说明这是首次进入本页面，直接显示第一个文档，否则filename=用户点击的文件名
+		if filename == "first_doc":
+			filename = doclist[0]
+		else:                      
+			filename = filename
+			
+		return  render_template("doc-inventory-show.html", title=u'资产岗文档', \
+		filename=filename, num_inventory=num_inventory, doclist=doclist)		
 	else:
-		return redirect(url_for('role_error_page'))	
-		
+		return redirect(url_for('role_error_page'))		
+
+	
 	
 @app.errorhandler(404)
 def page_not_found(e):
