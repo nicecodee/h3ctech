@@ -164,12 +164,8 @@ def wb_update_thisweek(name):
 		with open(path, 'r') as file:
 			for line in file:
 				if line.startswith(name):
-					data_line=line
-					filedata = []
 					member_data = []
-					filedata.append(data_line.split(" "))
-					#member_data.append(member_data)
-					member_data = filedata
+					member_data.append(line.split(" "))
 					break
 		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
 		for i in range(1,15):
@@ -227,7 +223,7 @@ def wb_update_thisweek(name):
 			
 			return redirect(url_for('wb_update_thisweek', name=name))	 
 		return render_template("wb-update-thisweek.html", title=u'本周白板-更新', form=form, weekdays=weekdays, \
-		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
+		member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))			
@@ -259,12 +255,8 @@ def wb_update_lastweek(name):
 		with open(path, 'r') as file:
 			for line in file:
 				if line.startswith(name):
-					data_line=line
-					filedata = []
 					member_data = []
-					filedata.append(data_line.split(" "))
-					#member_data.append(member_data)
-					member_data = filedata
+					member_data.append(line.split(" "))
 					break
 		#member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
 		for i in range(15):
@@ -323,7 +315,7 @@ def wb_update_lastweek(name):
 				
 			return redirect(url_for('wb_update_lastweek', name=name))	 
 		return render_template("wb-update-lastweek.html", title=u'上周白板-更新', form=form, weekdays=weekdays, \
-		filedata=filedata, member_data=member_data, num_wb=num_wb, list=list)
+		member_data=member_data, num_wb=num_wb, list=list)
 		
 	except Exception as e:
 		return(str(e))
@@ -793,7 +785,7 @@ def log_delete(filename):
 		os.remove(filename)
 
 		flash(u'日志删除成功!')
-		return  redirect(url_for('log_list'))
+		return  redirect(url_for('log_show',filename='latest_log'))
 	
 	except Exception as e:
 		return str(e)		
