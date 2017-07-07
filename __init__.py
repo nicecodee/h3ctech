@@ -496,7 +496,7 @@ def wb_review(filename):
 			for x in range(num):
 				filedata.append(name_lines[x].split(" "))		
 			
-			return render_template("wb-review.html", title=u'白板回顾', num=num, num_wb=num_wb, \
+			return render_template("wb-review.html", title=u'白板.历史记录', num=num, num_wb=num_wb, \
 				   list=list, fn=fn, weekdays=weekdays, filedata=filedata)
 		else:
 			return redirect(url_for('role_error_page'))
