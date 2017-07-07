@@ -466,7 +466,7 @@ def wb_review(filename):
 			#Get the list of weekly files
 			list = get_weekly_list()		
 			
-			#如果传入的文件名为空(即第一次进入页面)，即计算本周日期，页面显示本周记录
+			#如果传入的文件名为"thisweek"(说明这是首次进入本页面)，即计算本周日期，页面显示本周记录
 			if fn == "thisweek":
 				today = datetime.date.today()
 				start = today + datetime.timedelta(-2 - today.weekday())
@@ -797,23 +797,6 @@ def log_delete(filename):
 	
 	except Exception as e:
 		return str(e)		
-	
-	
-@app.route("/log-list/")
-@login_required
-def log_list():
-
-	#Get number of logs
-	num_logs = (sysadm_badges_number())[0]
-
-	list = []
-	#取得logs目录下的所有文件（列表）
-	files = os.listdir(LOGS_PATH)
-	#列表按文件名排序
-	files.sort(reverse = True)  
-	for logfile in files:
-		list.append(logfile)
-	return  render_template("log-list.html", title=u'日志列表', num_logs=num_logs, list=list)	
 		
 		
 @app.route('/log-show/<filename>/')
@@ -822,25 +805,29 @@ def log_list():
 def log_show(filename):
 	try:
 		set_cn_encoding()
-		filename = filename 
 		
 		#Get number of logs
 		num_logs = (sysadm_badges_number())[0]
 		
 		list = []
-		#取得logs目录下的所有文件（列表）
+		#取得logs目录下的所有文件（存到一个列表里）
 		files = os.listdir(LOGS_PATH)
-		#列表按文件名排序
+		#列表按文件名排序,让日期最新的日志文件成为列表的第一个元素
 		files.sort(reverse = True)  
 		for logfile in files:
 			list.append(logfile)
 			
-		fn = filename
 		
+		#如果传入的文件名为"latest_log"，说明这是首次进入本页面，直接显示最新的日志
+		if filename == "latest_log":
+			fn = files[0]		#files[0] 是列表的第一个元素，即最新日期的日志
+		else:
+			fn = filename
 		path = LOGS_PATH + fn
 		with open(path, 'r') as file:
 			event_lines = file.readlines()
-
+		
+		#data列表用于存放指定日志的数据
 		data = []
 		num = len(event_lines)
 

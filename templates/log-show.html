@@ -20,7 +20,7 @@
 					<ul>
 					{% for item in list %}
 						{% if fn == item %}
-							<li><a href="{{ url_for('log_show', filename=item) }}" >{{item}}&nbsp;&nbsp;<span class="glyphicon glyphicon-ok"" aria-hidden="true"></span></a><a href="{{ url_for('log_delete', filename=item) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash pull-right"" aria-hidden="true"></span></a></li>
+							<li><a href="{{ url_for('log_show', filename=item) }}" >{{item}}&nbsp;&nbsp;<span class="glyphicon glyphicon-hand-left"" aria-hidden="true"></span></a><a href="{{ url_for('log_delete', filename=item) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash pull-right"" aria-hidden="true"></span></a></li>
 						{% else %}
 					
 						 <li><a href="{{ url_for('log_show', filename=item) }}" >{{item}}</a><a href="{{ url_for('log_delete', filename=item) }}" onclick="return myConfirm(this.href)"><span class="glyphicon glyphicon-trash pull-right"" aria-hidden="true"></span></a></li>
