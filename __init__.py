@@ -38,6 +38,44 @@ def login_required(f):
 			
 	return wrap	
  
+#check if user is system admin(it needs to be defined before other functions)
+def sys_admin_required(f):
+	@wraps(f)
+	def wrap(*args, **kwargs):
+		c, conn = connection()
+		c.execute("select * from login_user where username = (%s)", [session['username']])
+	
+		#get the auth_type of first record
+		auth_type_db = c.fetchone()[5]
+		
+		#check auth_type of the logged in user, if not matches, redirect to role_error_page
+		if 'superadm' == auth_type_db:	
+			return f(*args, **kwargs)
+		else:			
+			return redirect(url_for('role_error_page'))			
+			
+	return wrap	  
+ 
+ 
+#check if user is admin of whiteboard(it needs to be defined before other functions)
+def wb_admin_required(f):
+	@wraps(f)
+	def wrap(*args, **kwargs):
+		c, conn = connection()
+		c.execute("select * from login_user where username = (%s)", [session['username']])
+	
+		#get the auth_type of first record
+		auth_type_db = c.fetchone()[5]
+		
+		#check auth_type of the logged in user, if not matches, redirect to role_error_page
+		if 'h3cadm' == auth_type_db or 'superadm' == auth_type_db:	
+			return f(*args, **kwargs)
+		else:			
+			return redirect(url_for('role_error_page'))			
+			
+	return wrap	 
+ 
+ 
 #solve the chinese code problem
 def	set_cn_encoding():
 	reload(sys)
@@ -233,6 +271,7 @@ def wb_update_thisweek(name):
 @app.route("/wb-update-lastweek/") 
 @app.route('/wb-update-lastweek/<name>/', methods = ['GET','POST'])
 @login_required
+@wb_admin_required
 def wb_update_lastweek(name):
 	try:
 		set_cn_encoding()	
@@ -323,6 +362,7 @@ def wb_update_lastweek(name):
 		
 @app.route("/wb-add-member/", methods = ['GET','POST'])
 @login_required
+@wb_admin_required
 def wb_add_member():
 	try:
 		set_cn_encoding()	
@@ -370,6 +410,7 @@ def wb_add_member():
 
 @app.route("/wb-del-member/", methods = ['GET','POST'])
 @login_required
+@wb_admin_required
 def wb_del_member():
 	try:
 		set_cn_encoding()	
@@ -653,7 +694,7 @@ def write_log_info(log_info):
 				ua_tmp = parse(ua)
 				ua_string = (str(ua_tmp)).replace(" ","")
 			
-				ip_loc = get_ip_info(ip_addr)
+				ip_loc = (get_ip_info(ip_addr)).replace(" ","")
 				
 				#get the auth_type of first record
 				username_db = c.fetchone()[1] 
@@ -692,6 +733,7 @@ def test():
 
 @app.route('/user-auth-edit/<username>/', methods = ['GET','POST'])
 @login_required
+@sys_admin_required
 def user_auth_edit(username):
 	error = ''
 	try:
@@ -731,6 +773,7 @@ def user_auth_edit(username):
 @app.route('/user-delete/<username>/')
 @app.route('/user-delete/')
 @login_required
+@sys_admin_required
 def user_delete(username):
 	try:
 		set_cn_encoding()
@@ -756,6 +799,7 @@ def user_delete(username):
 		
 @app.route("/user-list/")
 @login_required
+@sys_admin_required
 def user_list():
 	try:
 		c, conn = connection()
@@ -777,6 +821,7 @@ def user_list():
 @app.route('/log-delete/<filename>/')
 @app.route('/log-delete/')
 @login_required
+@sys_admin_required
 def log_delete(filename):
 	try:
 		set_cn_encoding()
@@ -794,6 +839,7 @@ def log_delete(filename):
 @app.route('/log-show/<filename>/')
 @app.route("/log-show/") 
 @login_required
+@sys_admin_required
 def log_show(filename):
 	try:
 		set_cn_encoding()
@@ -831,16 +877,6 @@ def log_show(filename):
 	except Exception as e: 
 		return str(e)
 	
-	
-@app.route("/comments/")
-def comments():
-	try:
-		error = ''
-
-		return  render_template("comments.html", title=u'留言板', error = error)
-	except Exception as e:
-		return str(e)
-
 	
 @app.route("/privacy/")
 def privacy():
@@ -924,6 +960,7 @@ def doc_upload():
 
 @app.route('/doc-type-edit/<filename>/', methods = ['GET','POST'])
 @login_required
+@sys_admin_required
 def doc_type_edit(filename):
 	error = ''
 	try:
@@ -975,6 +1012,7 @@ def doc_type_edit(filename):
 
 @app.route('/doc-name-edit/<filename>/', methods = ['GET','POST'])
 @login_required
+@sys_admin_required
 def doc_name_edit(filename):
 	error = ''
 	try:
@@ -1018,6 +1056,7 @@ def doc_name_edit(filename):
 @app.route('/doc-delete/<filename>/')
 @app.route('/doc-delete/')
 @login_required
+@sys_admin_required
 def doc_delete(filename):
 	try:
 		filename = filename.encode('utf-8')
@@ -1040,6 +1079,7 @@ def doc_delete(filename):
 	
 @app.route("/doc-list/")
 @login_required
+@sys_admin_required
 def doc_list():
 	try:
 		set_cn_encoding()
