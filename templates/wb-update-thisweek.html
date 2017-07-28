@@ -31,9 +31,10 @@
 			  </tr>
 		   </thead>
 		   <tbody>
+		   <!-- member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白 -->
 				<tr class="active">
 					{% for column in range(15) %}
-						<td> {{ member_data[0][column] }} </td>
+						<td> {{ member_data[0][column]|replace("-","") }} </td>
 					{% endfor %}
 				</tr>
 		   </tbody>
@@ -44,34 +45,35 @@
 	<div class="leaderboard" style="width:80%" id="center">
 		<h3>更新记录</h3>
 		
+		<!-- member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白 -->
 		<form action="" class="form-inline" method="post">
 			周六:&nbsp;&nbsp;
-			<input type="text" class="form-control"  name="halfday0"  value="{{member_data[0][1]}}">
-			<input type="text" class="form-control" name="halfday1"  value="{{member_data[0][2]}}">
+			<input type="text" class="form-control"  name="halfday0"  value="{{member_data[0][1]|replace("-","")}}">
+			<input type="text" class="form-control" name="halfday1"  value="{{member_data[0][2]|replace("-","")}}">
 			<br>                                                                                                          
 			周日:&nbsp;&nbsp;
-			<input type="text" class="form-control"  name="halfday2"  value="{{member_data[0][3]}}">
-			<input type="text" class="form-control"  name="halfday3"  value="{{member_data[0][4]}}">
+			<input type="text" class="form-control"  name="halfday2"  value="{{member_data[0][3]|replace("-","")}}">
+			<input type="text" class="form-control"  name="halfday3"  value="{{member_data[0][4]|replace("-","")}}">
 			<br>                                                                                                          
 			周一:&nbsp;&nbsp;
-			<input type="text" class="form-control" name="halfday4"  value="{{member_data[0][5]}}">
-			<input type="text" class="form-control" name="halfday5"  value="{{member_data[0][6]}}">
+			<input type="text" class="form-control" name="halfday4"  value="{{member_data[0][5]|replace("-","")}}">
+			<input type="text" class="form-control" name="halfday5"  value="{{member_data[0][6]|replace("-","")}}">
 			<br>                                                                                                          
 			周二:&nbsp;&nbsp;
-			<input type="text" class="form-control"  name="halfday6"  value="{{member_data[0][7]}}">
-			<input type="text" class="form-control" name="halfday7"  value="{{member_data[0][8]}}">
+			<input type="text" class="form-control"  name="halfday6"  value="{{member_data[0][7]|replace("-","")}}">
+			<input type="text" class="form-control" name="halfday7"  value="{{member_data[0][8]|replace("-","")}}">
 			<br>                                                                                                          
 			周三:&nbsp;&nbsp;
-			<input type="text" class="form-control" name="halfday8"  value="{{member_data[0][9]}}">
-			<input type="text" class="form-control" name="halfday9"  value="{{member_data[0][10]}}">
+			<input type="text" class="form-control" name="halfday8"  value="{{member_data[0][9]|replace("-","")}}">
+			<input type="text" class="form-control" name="halfday9"  value="{{member_data[0][10]|replace("-","")}}">
 			<br>                                                                                                   
 			周四:&nbsp;&nbsp;
-			<input type="text" class="form-control" name="halfday10"  value="{{member_data[0][11]}}">
-			<input type="text" class="form-control"  name="halfday11"  value="{{member_data[0][12]}}">
+			<input type="text" class="form-control" name="halfday10"  value="{{member_data[0][11]|replace("-","")}}">
+			<input type="text" class="form-control"  name="halfday11"  value="{{member_data[0][12]|replace("-","")}}">
 			<br>                                                                                                            
 			周五:&nbsp;&nbsp;
-			<input type="text" class="form-control"  name="halfday12"  value="{{member_data[0][13]}}">
-			<input type="text" class="form-control" name="halfday13"  value="{{member_data[0][14]}}">
+			<input type="text" class="form-control"  name="halfday12"  value="{{member_data[0][13]|replace("-","")}}">
+			<input type="text" class="form-control"  name="halfday13"  value="{{member_data[0][14]|replace("-","")}}">
 			<br><br>
 			<input class="btn btn-success" type="submit" value="提交">&nbsp;&nbsp;
 			<input type="button" class="btn btn-default" name="clear" value="清空" onclick="clearForm(this.form);" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

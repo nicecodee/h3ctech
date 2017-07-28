@@ -226,10 +226,6 @@ def wb_update_thisweek(name):
                     member_data = []
                     member_data.append(line.split(" "))
                     break
-        #member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
-        for i in range(1, 15):
-            if member_data[0][i] == "-":
-                member_data[0][i] = ""
         #页面下方表格，用于更新白板记录
         form = WhiteboardForm(request.form)
         if request.method == "POST":
@@ -318,10 +314,6 @@ def wb_update_lastweek(name):
                     member_data = []
                     member_data.append(line.split(" "))
                     break
-        #member_data用于自动填充到更新表格，但表格内的"-"要处理一下，显示为空白
-        for i in range(15):
-            if member_data[0][i] == "-":
-                member_data[0][i] = ""
 
         #页面下方表格，用于更新白板记录
         form = WhiteboardForm(request.form)
