@@ -34,17 +34,16 @@ from user_agents import parse
 import tablib
 from werkzeug import secure_filename
 from dbconnect import connection
-import config
-from config import SECRET_KEY, INSTANCE_PATH, LOGS_PATH, SERVER_DOCS_PATH, NETWORK_DOCS_PATH, \
-INVENTORY_DOCS_PATH, DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, WEEKLY_PATH, MAX_CONTENT_LENGTH, \
+from config import SECRET_KEY, instance_path, LOGS_PATH, SERVER_DOCS_PATH, NETWORK_DOCS_PATH, \
+INVENTORY_DOCS_PATH, DOCS_PATH, UPLOAD_FOLDER, ALLOWED_EXTENSIONS, WEEKLY_PATH, \
 WEEKLY_EXCEL_PATH, WEEKLY_NAMELIST_PATH
 
 
 app = Flask(__name__)
-# app.instance_path = INSTANCE_PATH
-#app.secret_key = SECRET_KEY
-#app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  
-app.config.from_object(config)
+# app.instance_path=instance_path
+app.secret_key = SECRET_KEY
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  #限制文件上传大小(10M)
+
 
 #check if user has logged in(it needs to be defined before other functions)
 def login_required(f):

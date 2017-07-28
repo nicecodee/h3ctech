@@ -1,0 +1,13 @@
+SECRET_KEY = "you-just-never-guess-haha"
+instance_path = '/var/www/h3ctech/static/'
+LOGS_PATH = '/var/www/h3ctech/static/access_logs/'
+WEEKLY_PATH = '/var/www/h3ctech/static/weekly/'
+WEEKLY_TMP_PATH = '/var/www/h3ctech/static/weekly_tmp/'
+WEEKLY_EXCEL_PATH = '/var/www/h3ctech/static/weekly_excel/'
+WEEKLY_NAMELIST_PATH = '/var/www/h3ctech/static/weekly_namelist/'
+DOCS_PATH = '/var/www/h3ctech/static/docs/'
+SERVER_DOCS_PATH = '/var/www/h3ctech/static/docs/server/'
+NETWORK_DOCS_PATH = '/var/www/h3ctech/static/docs/network/'
+INVENTORY_DOCS_PATH = '/var/www/h3ctech/static/docs/inventory/'
+UPLOAD_FOLDER = '/var/www/h3ctech/static/docs/upload/'
+ALLOWED_EXTENSIONS = set(['pdf', ])
