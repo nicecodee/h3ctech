@@ -2,19 +2,38 @@
 
 {% block page_panel %}
 
+{% block head %}
+	<style>
+	.form-container{
+    width: 250px;
+    margin: 0 auto;
+	}
+	</style>
+{% endblock %}
+
 <div class="leaderboard" style="margin-top:20px;">
 	<h1>用户注册:</h1>
 	<br>
 	{% from "_formhelpers.html" import render_field %}
 	<form method=post action="/register/">
-		<dl>
-			{{render_field(form.username)}}
-			{{render_field(form.email)}}
-			{{render_field(form.password)}}
-			{{render_field(form.confirm)}}
-			{{render_field(form.accept_tos)}}
-		</dl>
-		<p><input class="btn btn-success" type=submit value=注册></p>
+		<div class="form-container">
+			<div class="form-group">
+				{{render_field(form.username)}}
+			</div>
+			<div class="form-group">
+				{{render_field(form.email)}}
+			</div>
+			<div class="form-group">
+				{{render_field(form.password)}}
+			</div>
+			<div class="form-group">
+				{{render_field(form.confirm)}}
+			</div>
+			<div class="form-group">
+				{{render_field(form.accept_tos)}}
+			</div>
+			<button class="btn btn-success btn-block">注册</button>
+		</div>
 	</form>
 	
 	{% if error %}

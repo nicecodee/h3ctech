@@ -2,14 +2,31 @@
 
 {% block page_panel %}
 
+{% block head %}
+	<style>
+	.form-container{
+    width: 250px;
+    margin: 0 auto;
+	}
+	</style>
+{% endblock %}
+
 <div class="leaderboard" style="width:70%; margin-top:20px;" id="center">
-	<h1>请登陆:</h1>
+	<h1>请登录:</h1>
 	<br>
-	<form action="" class="form-inline" method="post">
-		<input type="text" class="form-control" placeholder="Username" name="username" value="{{request.form.username}}">
-		<input type="password" class="form-control" placeholder="Password" name="password" value="{{request.form.password}}">
-		<br><br>
-		<input class="btn btn-success" type="submit" value="登陆">
+
+	<form action="" method="POST">
+		<div class="form-container">
+			<div class="form-group">
+				<input type="text" class="form-control"  placeholder="用户名" name="username" value="{{request.form.username}}">
+			</div>
+			<div class="form-group">
+				<input type="password" class="form-control"  placeholder="密码" name="password" value="{{request.form.password}}">
+			</div>
+			<div class="form-group">
+				<button class="btn btn-success btn-block">登录</button>
+			</div>
+		</div>
 	</form>
 	<p>{{error}}</p>
 </div>

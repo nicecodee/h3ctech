@@ -1,4 +1,4 @@
-# encoding=utf-8
+# -*- coding: UTF-8 -*-
 '''
 # prerequisite:
 #   based on Python 2.7.x
@@ -45,12 +45,6 @@ app = Flask(__name__)
 #app.secret_key = SECRET_KEY
 #app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  
 app.config.from_object(config)
-
-
-#set default encoding from "ascii" to "utf8" in case of Chinese characters problem
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 #check if user has logged in(it needs to be defined before other functions)
 def login_required(f):
@@ -102,6 +96,12 @@ def wb_admin_required(f):
 
     return wrap
 
+
+#solve the chinese code problem
+def    set_cn_encoding():
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
 class WhiteboardForm(Form):
     name = TextField(u'姓名', [validators.Required()])
     day6_am = TextField(u'周六上午')
@@ -143,6 +143,7 @@ def get_weekly_list():
 @login_required
 def wb_show(week):
     try:
+        set_cn_encoding()
 
         #Get number of weekly whiteboards
         num_wb = (sysadm_badges_number())[3]
@@ -193,7 +194,7 @@ def wb_show(week):
             return redirect(url_for('role_error_page'))
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 #通过点击人名，跳转到本周白板更新页面
 @app.route('/wb-update-thisweek/<name>/')
@@ -202,6 +203,7 @@ def wb_show(week):
 @login_required
 def wb_update_thisweek(name):
     try:
+        set_cn_encoding()
 
         #Get number of weekly whiteboards
         num_wb = (sysadm_badges_number())[3]
@@ -279,7 +281,7 @@ def wb_update_thisweek(name):
 		weekdays=weekdays, member_data=member_data, num_wb=num_wb, list=list)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 #通过点击人名，跳转到上周白板更新页面
 @app.route('/wb-update-lastweek/<name>/')
@@ -289,6 +291,7 @@ def wb_update_thisweek(name):
 @wb_admin_required
 def wb_update_lastweek(name):
     try:
+        set_cn_encoding()
 
         #Get number of weekly whiteboards
         num_wb = (sysadm_badges_number())[3]
@@ -367,7 +370,7 @@ def wb_update_lastweek(name):
 		weekdays=weekdays, member_data=member_data, num_wb=num_wb, list=list)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route("/wb-add-member/", methods=['GET', 'POST'])
@@ -375,6 +378,7 @@ def wb_update_lastweek(name):
 @wb_admin_required
 def wb_add_member():
     try:
+        set_cn_encoding()
 
         #Get number of weekly whiteboards
         num_wb = (sysadm_badges_number())[3]
@@ -416,13 +420,14 @@ def wb_add_member():
 		num_wb=num_wb, list=list)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 @app.route("/wb-del-member/", methods=['GET', 'POST'])
 @login_required
 @wb_admin_required
 def wb_del_member():
     try:
+        set_cn_encoding()
 
         #Get number of weekly whiteboards
         num_wb = (sysadm_badges_number())[3]
@@ -484,7 +489,7 @@ def wb_del_member():
 		num_wb=num_wb, list=list)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route('/wb-review/<filename>/')
@@ -492,6 +497,7 @@ def wb_del_member():
 @login_required
 def wb_review(filename):
     try:
+        set_cn_encoding()
 
         fn = filename
 
@@ -544,13 +550,14 @@ def wb_review(filename):
             return redirect(url_for('role_error_page'))
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
 #To create a excel file(filename.xlsx)
 def wb_create_excel(filename):
     try:
+        set_cn_encoding()
 
         fn = filename
 
@@ -589,7 +596,7 @@ def wb_create_excel(filename):
             fout.write(data.xlsx)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 #get the location from user's ip
@@ -649,7 +656,7 @@ def docs_badges_number():
         return(num_server, num_network, num_inventory)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 #calculate the number of logs/users/docs for 'sya-admim' badges displaying
@@ -677,7 +684,7 @@ def sysadm_badges_number():
 
         return(num_logs, num_users, num_docs, num_weeklys)
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
@@ -713,7 +720,7 @@ def write_log_info(log_info):
                 file.write(data+'\n')
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
@@ -745,6 +752,7 @@ def test():
 def user_auth_edit(username):
     error = ''
     try:
+        set_cn_encoding()
         username = username
         c, conn = connection()
         if request.method == "POST":
@@ -774,7 +782,7 @@ def user_auth_edit(username):
 			username=username, num_logs=num_logs, num_users=num_users, num_docs=num_docs, error=error)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route('/user-delete/<username>/')
@@ -783,6 +791,7 @@ def user_auth_edit(username):
 @sys_admin_required
 def user_delete(username):
     try:
+        set_cn_encoding()
         username = username
         c, conn = connection()
 
@@ -799,7 +808,7 @@ def user_delete(username):
         return  redirect(url_for('user_list'))
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
@@ -822,7 +831,7 @@ def user_list():
         return render_template("user-list.html", title=u'用户列表', users_db=users_db, \
 		num_logs=num_logs, num_users=num_users, num_docs=num_docs)
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route('/log-delete/<filename>/')
@@ -831,6 +840,7 @@ def user_list():
 @sys_admin_required
 def log_delete(filename):
     try:
+        set_cn_encoding()
         filename = filename
         filename = LOGS_PATH+filename
         os.remove(filename)
@@ -839,7 +849,7 @@ def log_delete(filename):
         return  redirect(url_for('log_show', filename='latest_log'))
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route('/log-show/<filename>/')
@@ -848,6 +858,8 @@ def log_delete(filename):
 @sys_admin_required
 def log_show(filename):
     try:
+        set_cn_encoding()
+
         #Get number of logs
         num_logs = (sysadm_badges_number())[0]
 
@@ -880,7 +892,7 @@ def log_show(filename):
 		list=list, fn=fn, num_logs=num_logs)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route("/privacy/")
@@ -904,7 +916,7 @@ def role_error_page():
 
         return  render_template("role-error.html", title=u'权限错误', auth_type_db=auth_type_db)
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 # For a given file, return whether it's an allowed type or not
@@ -959,7 +971,7 @@ def doc_upload():
         else:
             return redirect(url_for('role_error_page'))
     except Exception as e:
-        # return str(e)
+        # return "page not found!"
         flash(u'上传失败！ 请检查上传的文件是否符合要求，再重新尝试!')
         return redirect(url_for('doc_upload'))
 
@@ -970,6 +982,7 @@ def doc_upload():
 def doc_type_edit(filename):
     error = ''
     try:
+        set_cn_encoding()
         filename = filename.encode('utf-8')
         old_doc_type = ''
 
@@ -1013,7 +1026,7 @@ def doc_type_edit(filename):
 
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route('/doc-name-edit/<filename>/', methods=['GET', 'POST'])
@@ -1022,6 +1035,7 @@ def doc_type_edit(filename):
 def doc_name_edit(filename):
     error = ''
     try:
+        set_cn_encoding()
         filename = filename.encode('utf-8')
         doc_type = ''
 
@@ -1053,7 +1067,7 @@ def doc_name_edit(filename):
 
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
@@ -1079,7 +1093,7 @@ def doc_delete(filename):
         return  redirect(url_for('doc_list'))
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route("/doc-list/")
@@ -1087,6 +1101,7 @@ def doc_delete(filename):
 @sys_admin_required
 def doc_list():
     try:
+        set_cn_encoding()
         fnlist = []
         dirlist = []
         for root, dirs, files in os.walk(DOCS_PATH):
@@ -1104,13 +1119,14 @@ def doc_list():
         return render_template("doc-list.html", title=u'文档列表', num_file=num_file, fnlist=fnlist, \
 		dirlist=dirlist, num_logs=num_logs, num_users=num_users, num_docs=num_docs)
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 @app.route("/doc-server-show/<filename>/")
 @app.route("/doc-server-show/")
 @login_required
 def doc_server_show(filename):
+    set_cn_encoding()
     filename = filename.encode('utf-8')
 
     c, conn = connection()
@@ -1144,6 +1160,7 @@ def doc_server_show(filename):
 @app.route("/doc-network-show/")
 @login_required
 def doc_network_show(filename):
+    set_cn_encoding()
     filename = filename.encode('utf-8')
 
     c, conn = connection()
@@ -1178,6 +1195,7 @@ def doc_network_show(filename):
 @app.route("/doc-inventory-show/")
 @login_required
 def doc_inventory_show(filename):
+    set_cn_encoding()
     filename = filename.encode('utf-8')
 
     c, conn = connection()
@@ -1230,6 +1248,8 @@ def logout():
 def login_page():
     error = ''
     try:
+        set_cn_encoding()
+
         c, conn = connection()
         if request.method == "POST":
             #Be carefule!! Must use [] to quote thwart(request.form['username']), otherwise it will
@@ -1282,6 +1302,8 @@ class RegistrationForm(Form):
 @app.route("/register/", methods=['GET', 'POST'])
 def register_page():
     try:
+        set_cn_encoding()
+
         form = RegistrationForm(request.form)
         if request.method == "POST" and form.validate():
             username = form.username.data
@@ -1318,7 +1340,7 @@ def register_page():
         return render_template("register.html", title=u'注册', form=form)
 
     except Exception as e:
-        return str(e)
+        return "page not found!"
 
 
 
